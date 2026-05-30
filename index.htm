@@ -1273,47 +1273,70 @@
   </div>
 </footer>
 
-<script>
-  // ===== PHOTO INJECTION from admin data (localStorage sync) =====
-  (function() {
-    // Player number → silhouette element id map
-    const playerNums = [1, 4, 5, 8, 10, 9];
-    const playerPhotos = JSON.parse(localStorage.getItem('esb_player_photos') || '{}');
-    playerNums.forEach(function(num) {
-      const sil = document.getElementById('sil-' + num);
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCmBoNkbBEJZiPTuYbLrVqThCYBLQ_a0Z4",
+  authDomain: "esbv1-abc77.firebaseapp.com",
+  projectId: "esbv1-abc77",
+  storageBucket: "esbv1-abc77.firebasestorage.app",
+  messagingSenderId: "156968190806",
+  appId: "1:156968190806:web:b29a2e793acb336e1e4cf7"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+// Listen in real-time — site updates instantly when admin saves
+onSnapshot(doc(db, 'esb', 'siteData'), (snap) => {
+  if (!snap.exists()) return;
+  const d = snap.data();
+
+  // --- Player photos ---
+  if (d.squad) {
+    d.squad.forEach(p => {
+      const sil = document.getElementById('sil-' + p.num);
       if (!sil) return;
-      const url = playerPhotos[num];
-      if (url) {
-        const container = sil.parentElement; // .player-photo
+      // Remove any existing real photo
+      const existing = sil.parentElement.querySelector('.player-real-photo');
+      if (existing) existing.remove();
+      if (p.photo) {
         const img = document.createElement('img');
-        img.src = url;
-        img.className = 'player-real-photo';
-        img.alt = 'Joueur ' + num;
-        img.onerror = function() { img.remove(); sil.style.opacity = '0.25'; };
-        img.onload = function() { sil.style.opacity = '0'; };
-        container.appendChild(img);
-      } else {
-        sil.style.opacity = '0.25';
-      }
+        img.src = p.photo; img.className = 'player-real-photo';
+        img.onerror = () => img.remove();
+        img.onload  = () => { sil.style.opacity = '0'; };
+        sil.parentElement.appendChild(img);
+      } else { sil.style.opacity = '0.25'; }
     });
+  }
 
-    // Shop photos
-    const shopPhotos = JSON.parse(localStorage.getItem('esb_shop_photos') || '{}');
-    [0, 1, 2].forEach(function(idx) {
-      const container = document.getElementById('shop-img-' + idx);
+  // --- Shop products ---
+  if (d.shop) {
+    d.shop.forEach((p, i) => {
+      const container = document.getElementById('shop-img-' + i);
       if (!container) return;
-      const url = shopPhotos[idx];
-      if (url) {
+      const existing = container.querySelector('.shop-real-photo');
+      if (existing) existing.remove();
+      if (p.photo) {
         const img = document.createElement('img');
-        img.src = url;
-        img.className = 'shop-real-photo';
-        img.alt = 'Produit ' + idx;
-        img.onerror = function() { img.remove(); };
+        img.src = p.photo; img.className = 'shop-real-photo';
+        img.onerror = () => img.remove();
         container.appendChild(img);
       }
+      const card = container.closest('.shop-card');
+      if (card) {
+        const nameEl  = card.querySelector('.shop-name');
+        const priceEl = card.querySelector('.shop-price');
+        if (nameEl)  nameEl.textContent  = p.name;
+        if (priceEl) priceEl.textContent = p.price + ' TND';
+      }
     });
-  })();
+  }
+});
+</script>
 
+<script>
   // Hero slider
   let current = 0;
   const slides = document.querySelectorAll('.hero-slide');
