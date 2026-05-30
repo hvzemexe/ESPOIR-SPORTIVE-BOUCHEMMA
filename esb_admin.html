@@ -6,6 +6,97 @@
 <title>ESB Admin — Panneau de gestion</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
+/* ===== LOGIN SCREEN ===== */
+#login-screen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #060b16;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Barlow', sans-serif;
+}
+#login-screen.hidden { display: none; }
+.login-box {
+  width: 380px;
+  background: #0d1525;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 40px 36px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+  text-align: center;
+}
+.login-shield {
+  width: 60px; height: 70px; margin: 0 auto 20px;
+  background: linear-gradient(160deg, #2360b0, #0d2d5e);
+  clip-path: polygon(50% 0%, 100% 15%, 100% 60%, 50% 100%, 0% 60%, 0% 15%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700;
+  color: white; border: 2px solid #3a7fd4;
+}
+.login-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: white; margin-bottom: 4px;
+}
+.login-sub {
+  font-size: 11px; color: #8898b0;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.login-field {
+  position: relative; margin-bottom: 16px; text-align: left;
+}
+.login-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: #8898b0;
+  display: block; margin-bottom: 7px;
+}
+.login-input {
+  width: 100%; padding: 12px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 5px; color: white;
+  font-family: 'Barlow', sans-serif; font-size: 14px;
+  outline: none; transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.login-input:focus { border-color: #3a7fd4; background: rgba(58,127,212,0.08); }
+.login-input.error { border-color: #e74c3c; animation: shake 0.35s ease; }
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-5px)} 80%{transform:translateX(5px)}
+}
+.login-btn {
+  width: 100%; padding: 13px;
+  background: #2360b0; border: none; border-radius: 5px;
+  color: white; font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  margin-top: 8px;
+}
+.login-btn:hover { background: #3a7fd4; transform: translateY(-1px); }
+.login-btn:active { transform: translateY(0); }
+.login-error {
+  color: #ff7b6b; font-size: 12px; margin-top: 12px;
+  min-height: 18px; font-weight: 600;
+}
+.login-attempts {
+  font-size: 10px; color: #8898b0; margin-top: 16px;
+  letter-spacing: 0.5px;
+}
+.login-locked {
+  color: #e74c3c; font-size: 13px; font-weight: 600;
+  padding: 12px; background: rgba(231,76,60,0.1);
+  border: 1px solid rgba(231,76,60,0.3);
+  border-radius: 5px; margin-top: 12px;
+  display: none;
+}
+.show-pw-btn {
+  position: absolute; right: 12px; top: 34px;
+  background: none; border: none; color: #8898b0;
+  cursor: pointer; font-size: 16px; padding: 2px;
+}
+.show-pw-btn:hover { color: white; }
+</style>
 :root {
   --esb-blue: #1a4a8a;
   --esb-blue-dark: #0d2d5e;
@@ -543,6 +634,32 @@ body {
 </head>
 <body>
 
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-shield">ESB</div>
+    <div class="login-title">ESB Admin</div>
+    <div class="login-sub">Espace réservé · Accès sécurisé</div>
+
+    <div class="login-field">
+      <label class="login-label">Identifiant</label>
+      <input class="login-input" type="text" id="login-user" placeholder="admin" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()">
+    </div>
+    <div class="login-field">
+      <label class="login-label">Mot de passe</label>
+      <input class="login-input" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="show-pw-btn" type="button" onclick="togglePw()" title="Afficher/masquer">👁</button>
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">🔐 Se connecter</button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-locked" id="login-locked">
+      🔒 Trop de tentatives. Réessayez dans <span id="lockdown-timer">60</span>s.
+    </div>
+    <div class="login-attempts" id="login-attempts"></div>
+  </div>
+</div>
+
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-brand">
@@ -607,7 +724,7 @@ body {
         <div class="user-role">Super administrateur</div>
       </div>
     </div>
-    <button class="btn-logout" onclick="showToast('Déconnexion simulée', 'success')">⏻ Déconnexion</button>
+    <button class="btn-logout" onclick="doLogout()">⏻ Déconnexion</button>
   </div>
 </aside>
 
@@ -1879,6 +1996,107 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 document.getElementById('confirm-overlay').addEventListener('click', (e) => {
   if (e.target === e.currentTarget) closeConfirm();
 });
+
+// ===== AUTH =====
+// Change these credentials to whatever you want
+const AUTH = { user: 'admin', pass: 'ESB2025!' };
+const SESSION_KEY = 'esb_admin_session';
+const LOCK_KEY    = 'esb_admin_lockout';
+const MAX_TRIES   = 5;
+let failCount = parseInt(sessionStorage.getItem('esb_fails') || '0');
+
+function checkSession() {
+  const token = sessionStorage.getItem(SESSION_KEY);
+  if (token === 'granted') {
+    document.getElementById('login-screen').classList.add('hidden');
+  } else {
+    checkLockout();
+  }
+}
+
+function checkLockout() {
+  const lockUntil = parseInt(localStorage.getItem(LOCK_KEY) || '0');
+  const now = Date.now();
+  if (lockUntil > now) {
+    showLocked(Math.ceil((lockUntil - now) / 1000));
+  } else {
+    updateAttemptsLabel();
+  }
+}
+
+function doLogin() {
+  const lockUntil = parseInt(localStorage.getItem(LOCK_KEY) || '0');
+  if (Date.now() < lockUntil) return;
+
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value;
+
+  if (user === AUTH.user && pass === AUTH.pass) {
+    sessionStorage.setItem(SESSION_KEY, 'granted');
+    sessionStorage.setItem('esb_fails', '0');
+    failCount = 0;
+    document.getElementById('login-screen').classList.add('hidden');
+  } else {
+    failCount++;
+    sessionStorage.setItem('esb_fails', failCount);
+    const userEl = document.getElementById('login-user');
+    const passEl = document.getElementById('login-pass');
+    userEl.classList.add('error'); passEl.classList.add('error');
+    setTimeout(() => { userEl.classList.remove('error'); passEl.classList.remove('error'); }, 400);
+    passEl.value = '';
+
+    const remaining = MAX_TRIES - failCount;
+    if (failCount >= MAX_TRIES) {
+      const until = Date.now() + 60000;
+      localStorage.setItem(LOCK_KEY, until);
+      failCount = 0; sessionStorage.setItem('esb_fails', '0');
+      showLocked(60);
+    } else {
+      document.getElementById('login-error').textContent = 'Identifiant ou mot de passe incorrect.';
+      updateAttemptsLabel();
+    }
+  }
+}
+
+function showLocked(seconds) {
+  document.getElementById('login-error').textContent = '';
+  document.getElementById('login-locked').style.display = 'block';
+  document.getElementById('login-btn') && (document.querySelector('.login-btn').disabled = true);
+  document.getElementById('lockdown-timer').textContent = seconds;
+  const iv = setInterval(() => {
+    seconds--;
+    const el = document.getElementById('lockdown-timer');
+    if (el) el.textContent = seconds;
+    if (seconds <= 0) {
+      clearInterval(iv);
+      document.getElementById('login-locked').style.display = 'none';
+      document.querySelector('.login-btn').disabled = false;
+      localStorage.removeItem(LOCK_KEY);
+      updateAttemptsLabel();
+    }
+  }, 1000);
+}
+
+function updateAttemptsLabel() {
+  const el = document.getElementById('login-attempts');
+  if (!el) return;
+  el.textContent = failCount > 0
+    ? `${failCount} tentative(s) échouée(s) · ${MAX_TRIES - failCount} restante(s) avant blocage`
+    : '';
+}
+
+function togglePw() {
+  const inp = document.getElementById('login-pass');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+function doLogout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  location.reload();
+}
+
+// Run auth check immediately
+checkSession();
 
 // Init
 renderAll();
