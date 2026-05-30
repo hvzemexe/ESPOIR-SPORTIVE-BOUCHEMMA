@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site officiel de l'ESB - Espoir Sportif de Bouchema</title>
+<meta name="description" content="Site officiel de l'Espoir Sportif de Bouchema. Toute l'actualité autour de l'ESB, matchs, joueurs, et informations du club.">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --esb-blue: #1a4a8a;
+    --esb-blue-dark: #0d2d5e;
+    --esb-blue-mid: #2360b0;
+    --esb-blue-light: #3a7fd4;
+    --esb-gold: #c8a84b;
+    --esb-white: #ffffff;
+    --esb-off-white: #f4f6fa;
+    --esb-dark: #0a0e1a;
+    --esb-gray: #8898b0;
+    --esb-gray-light: #d8e2f0;
+    --transition: all 0.28s cubic-bezier(0.4,0,0.2,1);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--esb-dark);
+    color: var(--esb-white);
+    overflow-x: hidden;
+  }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    background: var(--esb-blue-dark);
+    padding: 6px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--esb-gray-light);
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .topbar a { color: var(--esb-gray-light); text-decoration: none; }
+  .topbar a:hover { color: var(--esb-white); }
+  .topbar-links { display: flex; gap: 18px; }
+  .topbar-social { display: flex; gap: 10px; align-items: center; }
+  .topbar-social a {
+    width: 24px; height: 24px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    transition: var(--transition);
+  }
+  .topbar-social a:hover { background: var(--esb-blue-mid); color: white; }
+
+  /* ===== HEADER / NAV ===== */
+  header {
+    background: var(--esb-dark);
+    position: sticky; top: 0; z-index: 1000;
+    border-bottom: 2px solid var(--esb-blue);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+  }
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    height: 70px;
+    gap: 0;
+  }
+  .logo-area {
+    display: flex; align-items: center; gap: 14px;
+    text-decoration: none; color: white; flex-shrink: 0;
+    margin-right: 36px;
+  }
+  .logo-shield {
+    width: 52px; height: 60px;
+    background: var(--esb-blue);
+    clip-path: polygon(50% 0%, 100% 15%, 100% 60%, 50% 100%, 0% 60%, 0% 15%);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Oswald', sans-serif;
+    font-weight: 700; font-size: 16px;
+    letter-spacing: 1px;
+    background: linear-gradient(160deg, var(--esb-blue-mid), var(--esb-blue-dark));
+    border: 2px solid var(--esb-blue-light);
+    position: relative;
+  }
+  .logo-img { width: 52px; height: 60px; object-fit: contain; }
+  .logo-text { display: flex; flex-direction: column; }
+  .logo-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px; font-weight: 700;
+    letter-spacing: 2px;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .logo-full {
+    font-size: 9px; color: var(--esb-gray);
+    letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px;
+  }
+  nav.main-nav { display: flex; align-items: center; flex: 1; }
+  .nav-list { list-style: none; display: flex; align-items: center; height: 70px; }
+  .nav-item {
+    position: relative;
+    height: 100%;
+    display: flex; align-items: center;
+  }
+  .nav-link {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--esb-gray-light);
+    text-decoration: none;
+    padding: 0 18px;
+    height: 100%;
+    display: flex; align-items: center;
+    transition: var(--transition);
+    position: relative;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute; bottom: 0; left: 50%; right: 50%;
+    height: 3px; background: var(--esb-blue-light);
+    transition: var(--transition);
+  }
+  .nav-item:hover .nav-link::after, .nav-item.active .nav-link::after {
+    left: 0; right: 0;
+  }
+  .nav-item:hover .nav-link, .nav-item.active .nav-link { color: white; }
+  .nav-dropdown {
+    position: absolute; top: 100%; left: 0;
+    background: var(--esb-blue-dark);
+    min-width: 200px;
+    border-top: 3px solid var(--esb-blue-light);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    opacity: 0; pointer-events: none;
+    transform: translateY(-8px);
+    transition: var(--transition);
+    border-radius: 0 0 6px 6px;
+  }
+  .nav-item:hover .nav-dropdown { opacity: 1; pointer-events: all; transform: translateY(0); }
+  .nav-dropdown a {
+    display: block; padding: 11px 20px;
+    color: var(--esb-gray-light); text-decoration: none;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: var(--transition);
+  }
+  .nav-dropdown a:hover { background: rgba(255,255,255,0.07); color: white; padding-left: 26px; }
+  .header-cta {
+    margin-left: auto;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .btn-primary {
+    background: var(--esb-blue-mid);
+    color: white; border: none;
+    padding: 9px 20px; border-radius: 4px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase;
+    cursor: pointer; text-decoration: none;
+    transition: var(--transition);
+  }
+  .btn-primary:hover { background: var(--esb-blue-light); transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent;
+    color: var(--esb-gray-light); border: 1px solid rgba(255,255,255,0.2);
+    padding: 8px 16px; border-radius: 4px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    cursor: pointer; text-decoration: none;
+    transition: var(--transition);
+  }
+  .btn-outline:hover { border-color: white; color: white; }
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px;
+  }
+  .hamburger span { width: 24px; height: 2px; background: white; border-radius: 2px; transition: var(--transition); }
+
+  /* ===== HERO SLIDER ===== */
+  .hero {
+    position: relative; overflow: hidden;
+    height: 80vh; min-height: 520px;
+    background: var(--esb-blue-dark);
+  }
+  .hero-slide {
+    position: absolute; inset: 0;
+    display: flex; align-items: flex-end;
+    padding: 60px 80px;
+    opacity: 0; transition: opacity 0.8s ease;
+    background: linear-gradient(135deg, #0a2050 0%, #1a4a8a 50%, #0d2d5e 100%);
+  }
+  .hero-slide.active { opacity: 1; }
+  .hero-bg-pattern {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: repeating-linear-gradient(
+      -45deg, white 0, white 1px, transparent 0, transparent 50%
+    );
+    background-size: 20px 20px;
+  }
+  .hero-accent {
+    position: absolute; right: 0; top: 0; bottom: 0;
+    width: 45%;
+    background: linear-gradient(135deg, transparent 30%, rgba(26, 74, 138, 0.3) 100%);
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+  .hero-badge-bg {
+    position: absolute; right: 10%; top: 50%;
+    transform: translateY(-50%);
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(35,96,176,0.15) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 680px; }
+  .hero-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--esb-gold);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .hero-tag::before { content: ''; width: 30px; height: 2px; background: var(--esb-gold); }
+  .hero-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(36px, 5vw, 68px);
+    font-weight: 700; line-height: 1.05;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  }
+  .hero-title span { color: var(--esb-blue-light); }
+  .hero-desc {
+    font-size: 15px; color: rgba(255,255,255,0.75);
+    max-width: 500px; line-height: 1.6; margin-bottom: 28px;
+  }
+  .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-hero {
+    padding: 14px 32px; border-radius: 4px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    text-decoration: none; transition: var(--transition);
+  }
+  .btn-hero-main { background: var(--esb-blue-mid); color: white; border: 2px solid var(--esb-blue-mid); }
+  .btn-hero-main:hover { background: var(--esb-blue-light); border-color: var(--esb-blue-light); transform: translateY(-2px); }
+  .btn-hero-sec { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.4); }
+  .btn-hero-sec:hover { border-color: white; background: rgba(255,255,255,0.08); }
+
+  .hero-dots {
+    position: absolute; bottom: 24px; left: 80px; z-index: 5;
+    display: flex; gap: 8px;
+  }
+  .hero-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.3); cursor: pointer; transition: var(--transition);
+  }
+  .hero-dot.active { background: white; width: 24px; border-radius: 4px; }
+
+  /* ===== MATCH TICKER ===== */
+  .match-ticker {
+    background: var(--esb-blue);
+    padding: 0;
+    overflow: hidden;
+  }
+  .ticker-inner {
+    max-width: 1400px; margin: 0 auto;
+    display: flex; align-items: stretch;
+  }
+  .ticker-label {
+    background: var(--esb-blue-dark);
+    padding: 14px 24px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+    white-space: nowrap;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+  }
+  .live-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #e74c3c;
+    box-shadow: 0 0 0 3px rgba(231,76,60,0.3);
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 0 3px rgba(231,76,60,0.3)} 50%{box-shadow:0 0 0 6px rgba(231,76,60,0.1)} }
+  .match-cards {
+    display: flex; overflow-x: auto;
+    scrollbar-width: none;
+    gap: 0;
+    flex: 1;
+  }
+  .match-cards::-webkit-scrollbar { display: none; }
+  .match-card {
+    flex-shrink: 0;
+    padding: 12px 28px;
+    display: flex; align-items: center; gap: 16px;
+    border-right: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer; transition: var(--transition);
+  }
+  .match-card:hover { background: rgba(255,255,255,0.07); }
+  .team-info { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .team-abbr {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700; letter-spacing: 1px;
+  }
+  .team-crest {
+    width: 28px; height: 28px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+  }
+  .match-score {
+    text-align: center;
+  }
+  .score-nums {
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px; font-weight: 700;
+    letter-spacing: 2px; line-height: 1;
+  }
+  .score-info {
+    font-size: 9px; color: rgba(255,255,255,0.5);
+    letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;
+  }
+
+  /* ===== SECTION STYLES ===== */
+  section { padding: 64px 0; }
+  .container { max-width: 1400px; margin: 0 auto; padding: 0 24px; }
+  .section-header {
+    display: flex; align-items: flex-end;
+    justify-content: space-between; margin-bottom: 36px;
+  }
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--esb-blue-light); margin-bottom: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::before { content: ''; width: 20px; height: 2px; background: var(--esb-blue-light); }
+  .section-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(24px, 3vw, 38px);
+    font-weight: 700; text-transform: uppercase;
+    line-height: 1.1;
+  }
+  .see-all {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--esb-blue-light);
+    text-decoration: none; padding: 8px 0;
+    border-bottom: 2px solid var(--esb-blue-light);
+    transition: var(--transition);
+  }
+  .see-all:hover { color: white; border-color: white; }
+
+  /* ===== NEWS GRID ===== */
+  .news-section { background: #0d1525; }
+  .news-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 3px;
+  }
+  .news-card {
+    position: relative; overflow: hidden;
+    cursor: pointer; display: block; text-decoration: none;
+    background: var(--esb-blue-dark);
+  }
+  .news-card:first-child {
+    grid-row: 1 / 3;
+  }
+  .news-img {
+    width: 100%; aspect-ratio: 16/9;
+    background: linear-gradient(135deg, #1a3a6e, #0d2050);
+    position: relative; overflow: hidden;
+  }
+  .news-card:first-child .news-img { aspect-ratio: unset; height: 100%; min-height: 400px; }
+  .news-img-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px; opacity: 0.15;
+  }
+  .news-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(0deg, rgba(5,12,30,0.9) 0%, rgba(5,12,30,0.2) 60%, transparent 100%);
+  }
+  .news-body { padding: 20px; position: relative; }
+  .news-card:first-child .news-body {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 28px;
+  }
+  .news-tag {
+    display: inline-block;
+    background: var(--esb-blue-mid);
+    color: white; font-size: 9px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 2px;
+    margin-bottom: 10px;
+  }
+  .news-card:first-child .news-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 26px; font-weight: 700;
+    line-height: 1.2; color: white; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .news-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 15px; font-weight: 600;
+    line-height: 1.3; color: white; text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .news-meta { font-size: 11px; color: var(--esb-gray); }
+  .news-card:hover .news-img-placeholder { opacity: 0.2; }
+  .news-card:hover { transform: scale(1.01); }
+  .news-card { transition: transform 0.3s ease; }
+
+  /* ===== SQUAD SECTION ===== */
+  .squad-section { background: var(--esb-dark); }
+  .squad-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+  }
+  .player-card {
+    background: #0d1525;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 1px solid rgba(255,255,255,0.05);
+    text-decoration: none; display: block; color: white;
+  }
+  .player-card:hover { transform: translateY(-4px); border-color: var(--esb-blue-mid); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+  .player-photo {
+    aspect-ratio: 3/4;
+    background: linear-gradient(180deg, var(--esb-blue) 0%, var(--esb-blue-dark) 100%);
+    position: relative; overflow: hidden;
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  .player-photo img.player-real-photo {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: top center;
+    transition: transform 0.4s ease;
+  }
+  .player-card:hover .player-real-photo { transform: scale(1.04); }
+  .player-silhouette {
+    width: 65%;
+    opacity: 0.25;
+    font-size: 72px;
+    text-align: center;
+    padding-bottom: 8px;
+  }
+  .player-number {
+    position: absolute; top: 12px; right: 12px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 28px; font-weight: 700;
+    color: rgba(255,255,255,0.15);
+    line-height: 1;
+  }
+  .player-info { padding: 12px; }
+  .player-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 13px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .player-pos {
+    font-size: 10px; color: var(--esb-blue-light);
+    letter-spacing: 1px; text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* ===== STATS SECTION ===== */
+  .stats-section {
+    background: linear-gradient(135deg, var(--esb-blue-dark), #0a1e42);
+    padding: 80px 0;
+    position: relative; overflow: hidden;
+  }
+  .stats-section::before {
+    content: 'ESB';
+    position: absolute; right: -60px; top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Oswald', sans-serif;
+    font-size: 300px; font-weight: 800;
+    color: rgba(255,255,255,0.02);
+    line-height: 1;
+    pointer-events: none;
+    letter-spacing: -10px;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(255,255,255,0.07);
+  }
+  .stat-item {
+    background: rgba(13, 45, 94, 0.5);
+    padding: 40px 32px;
+    text-align: center;
+    position: relative;
+  }
+  .stat-num {
+    font-family: 'Oswald', sans-serif;
+    font-size: 56px; font-weight: 700;
+    color: var(--esb-blue-light);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ===== FIXTURE SECTION ===== */
+  .fixtures-section { background: #080e1f; }
+  .fixtures-list { display: flex; flex-direction: column; gap: 4px; }
+  .fixture-row {
+    display: flex; align-items: center;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 4px;
+    padding: 18px 24px;
+    gap: 16px;
+    transition: var(--transition);
+    cursor: pointer;
+  }
+  .fixture-row:hover { background: rgba(26, 74, 138, 0.15); border-color: rgba(26, 74, 138, 0.4); }
+  .fixture-date {
+    min-width: 70px;
+    font-size: 12px; color: var(--esb-gray);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px;
+  }
+  .fixture-comp {
+    min-width: 80px;
+    font-size: 10px; color: var(--esb-blue-light);
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 1px; text-transform: uppercase;
+    font-weight: 700;
+  }
+  .fixture-teams {
+    flex: 1; display: flex; align-items: center; gap: 12px;
+  }
+  .fixture-team {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .fixture-team.home { text-align: right; flex: 1; }
+  .fixture-team.away { flex: 1; }
+  .fixture-vs {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px; color: var(--esb-gray);
+    min-width: 28px; text-align: center;
+  }
+  .fixture-score {
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px; font-weight: 700;
+    min-width: 60px; text-align: center;
+    color: var(--esb-blue-light);
+  }
+  .fixture-result {
+    min-width: 28px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    padding: 3px 8px; border-radius: 2px; text-align: center;
+  }
+  .result-w { background: #1a6e3a; color: #4dff91; }
+  .result-d { background: #4a4a00; color: #ffd700; }
+  .result-l { background: #6e1a1a; color: #ff6b6b; }
+
+  /* ===== SHOP SECTION ===== */
+  .shop-section {
+    background: linear-gradient(180deg, #0d1525 0%, #060c1a 100%);
+  }
+  .shop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .shop-card {
+    background: #0d1a30;
+    border-radius: 8px; overflow: hidden;
+    cursor: pointer; transition: var(--transition);
+    border: 1px solid rgba(255,255,255,0.06);
+    text-decoration: none; display: block; color: white;
+  }
+  .shop-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); border-color: var(--esb-blue-mid); }
+  .shop-img {
+    aspect-ratio: 1;
+    background: linear-gradient(135deg, var(--esb-blue), #0d2050);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 64px; position: relative; overflow: hidden;
+  }
+  .shop-img img.shop-real-photo {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .shop-card:hover .shop-real-photo { transform: scale(1.05); }
+  .shop-badge {
+    position: absolute; top: 12px; right: 12px;
+    background: var(--esb-gold);
+    color: #1a0000; font-size: 9px; font-weight: 800;
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 4px 8px; border-radius: 2px;
+  }
+  .shop-info { padding: 16px; }
+  .shop-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 16px; font-weight: 600;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .shop-price { font-size: 14px; color: var(--esb-blue-light); font-weight: 600; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: #04080f;
+    border-top: 2px solid var(--esb-blue-dark);
+    padding: 60px 0 0;
+  }
+  .footer-grid {
+    max-width: 1400px; margin: 0 auto; padding: 0 24px;
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px; padding-bottom: 48px;
+  }
+  .footer-brand { }
+  .footer-logo-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 32px; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .footer-logo-sub {
+    font-size: 10px; color: var(--esb-gray);
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .footer-desc {
+    font-size: 13px; color: var(--esb-gray);
+    line-height: 1.7; max-width: 280px; margin-bottom: 24px;
+  }
+  .footer-social { display: flex; gap: 10px; }
+  .social-btn {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; text-decoration: none; color: var(--esb-gray);
+    transition: var(--transition);
+  }
+  .social-btn:hover { background: var(--esb-blue-mid); border-color: var(--esb-blue-mid); color: white; }
+  .footer-col h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--esb-blue-light); margin-bottom: 20px;
+    padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .footer-links { list-style: none; }
+  .footer-links li { margin-bottom: 10px; }
+  .footer-links a {
+    color: var(--esb-gray); text-decoration: none; font-size: 13px;
+    transition: var(--transition);
+  }
+  .footer-links a:hover { color: white; padding-left: 4px; }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 20px 24px;
+    max-width: 1400px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; color: var(--esb-gray);
+  }
+  .footer-bottom-links { display: flex; gap: 20px; }
+  .footer-bottom-links a { color: var(--esb-gray); text-decoration: none; }
+  .footer-bottom-links a:hover { color: white; }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 900px) {
+    .nav-list { display: none; }
+    .header-cta { display: none; }
+    .hamburger { display: flex; }
+    .hero { height: 60vh; min-height: 400px; }
+    .hero-slide { padding: 30px 24px; }
+    .news-grid { grid-template-columns: 1fr; }
+    .news-card:first-child { grid-row: auto; }
+    .news-card:first-child .news-img { min-height: 240px; }
+    .squad-grid { grid-template-columns: repeat(3, 1fr); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .shop-grid { grid-template-columns: 1fr 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .topbar-links { display: none; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .fixture-comp { display: none; }
+  }
+  @media (max-width: 500px) {
+    .squad-grid { grid-template-columns: repeat(2, 1fr); }
+    .shop-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-content > * {
+    animation: fadeInUp 0.7s ease both;
+  }
+  .hero-tag { animation-delay: 0.1s; }
+  .hero-title { animation-delay: 0.25s; }
+  .hero-desc { animation-delay: 0.4s; }
+  .hero-actions { animation-delay: 0.55s; }
+
+  /* Mobile nav open */
+  .nav-open .nav-list {
+    display: flex; flex-direction: column;
+    position: fixed; top: 70px; left: 0; right: 0;
+    background: var(--esb-dark);
+    height: calc(100vh - 70px);
+    padding: 24px;
+    gap: 4px;
+    z-index: 999;
+    overflow-y: auto;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .nav-open .nav-item { height: auto; }
+  .nav-open .nav-link { height: auto; padding: 14px 0; }
+  .nav-open .nav-dropdown { position: static; opacity: 1; pointer-events: all; transform: none; border-radius: 0; box-shadow: none; border: none; background: rgba(255,255,255,0.04); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-links">
+    <a href="#">Accueil</a>
+    <a href="#">Boutique ESB</a>
+    <a href="#">Billetterie</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="topbar-social">
+    <a href="#" title="Facebook">f</a>
+    <a href="#" title="Instagram">in</a>
+    <a href="#" title="Twitter/X">𝕏</a>
+    <a href="#" title="YouTube">▶</a>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header id="site-header">
+  <div class="header-inner">
+    <a href="#" class="logo-area">
+      <img src="Calque_6.png" alt="ESB Logo" class="logo-img" onerror="this.style.display='none'">
+      <div class="logo-text">
+        <div class="logo-name">ESB</div>
+        <div class="logo-full">Espoir Sportif de Bouchema</div>
+      </div>
+    </a>
+
+    <nav class="main-nav" id="main-nav">
+      <ul class="nav-list">
+        <li class="nav-item active">
+          <a href="#" class="nav-link">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">Actualités ▾</a>
+          <div class="nav-dropdown">
+            <a href="#">Dernières nouvelles</a>
+            <a href="#">Transferts</a>
+            <a href="#">Communiqués officiels</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">Équipe ▾</a>
+          <div class="nav-dropdown">
+            <a href="#">Effectif</a>
+            <a href="#">Staff technique</a>
+            <a href="#">Équipe réserve</a>
+            <a href="#">Académie</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">Matchs ▾</a>
+          <div class="nav-dropdown">
+            <a href="#">Calendrier</a>
+            <a href="#">Résultats</a>
+            <a href="#">Classement</a>
+            <a href="#">Statistiques</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">Club ▾</a>
+          <div class="nav-dropdown">
+            <a href="#">Histoire du club</a>
+            <a href="#">Stade</a>
+            <a href="#">Partenaires</a>
+            <a href="#">Contact</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">Boutique</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="header-cta">
+      <a href="#" class="btn-outline">Connexion</a>
+      <a href="#" class="btn-primary">Billets</a>
+    </div>
+    <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</header>
+
+<!-- HERO SLIDER -->
+<section class="hero">
+  <div class="hero-slide active" id="slide-1">
+    <div class="hero-bg-pattern"></div>
+    <div class="hero-accent"></div>
+    <div class="hero-badge-bg"></div>
+    <div class="hero-content">
+      <div class="hero-tag">Ligue 1 Tunisie · Journée 28</div>
+      <h1 class="hero-title">ESB <span>vs</span> Club Africain<br>Ce Dimanche</h1>
+      <p class="hero-desc">Le derby s'annonce explosif. L'Espoir Sportif de Bouchema reçoit le Club Africain au Stade Municipal. Soyez là !</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-hero btn-hero-main">🎟 Acheter des billets</a>
+        <a href="#" class="btn-hero btn-hero-sec">Infos match →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-slide" id="slide-2">
+    <div class="hero-bg-pattern"></div>
+    <div class="hero-accent"></div>
+    <div class="hero-content">
+      <div class="hero-tag">Transfert · Officiel</div>
+      <h1 class="hero-title">Bienvenue<br><span>à l'ESB 2024/25</span></h1>
+      <p class="hero-desc">La direction sportive renforce l'effectif avec de nouvelles recrues ambitieuses pour la nouvelle saison.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-hero btn-hero-main">Voir l'effectif</a>
+        <a href="#" class="btn-hero btn-hero-sec">En savoir plus →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-slide" id="slide-3">
+    <div class="hero-bg-pattern"></div>
+    <div class="hero-accent"></div>
+    <div class="hero-content">
+      <div class="hero-tag">Boutique officielle · Nouveau</div>
+      <h1 class="hero-title">Maillot<br><span>Domicile 25/26</span></h1>
+      <p class="hero-desc">Le nouveau maillot domicile de l'ESB est disponible. Montrez vos couleurs, portez le bleu et blanc.</p>
+      <div class="hero-actions">
+        <a href="#" class="btn-hero btn-hero-main">Commander maintenant</a>
+        <a href="#" class="btn-hero btn-hero-sec">Voir la collection →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-dots">
+    <div class="hero-dot active" onclick="goSlide(0)"></div>
+    <div class="hero-dot" onclick="goSlide(1)"></div>
+    <div class="hero-dot" onclick="goSlide(2)"></div>
+  </div>
+</section>
+
+<!-- MATCH TICKER -->
+<div class="match-ticker">
+  <div class="ticker-inner">
+    <div class="ticker-label">
+      <div class="live-dot"></div>
+      Résultats récents
+    </div>
+    <div class="match-cards">
+      <div class="match-card">
+        <div class="team-info">
+          <div class="team-crest">ESB</div>
+          <div class="team-abbr">ESB</div>
+        </div>
+        <div class="match-score">
+          <div class="score-nums">2 - 1</div>
+          <div class="score-info">FT · J27</div>
+        </div>
+        <div class="team-info">
+          <div class="team-crest">EST</div>
+          <div class="team-abbr">EST</div>
+        </div>
+      </div>
+      <div class="match-card">
+        <div class="team-info">
+          <div class="team-crest">OB</div>
+          <div class="team-abbr">OB</div>
+        </div>
+        <div class="match-score">
+          <div class="score-nums">0 - 0</div>
+          <div class="score-info">FT · J26</div>
+        </div>
+        <div class="team-info">
+          <div class="team-crest">ESB</div>
+          <div class="team-abbr">ESB</div>
+        </div>
+      </div>
+      <div class="match-card">
+        <div class="team-info">
+          <div class="team-crest">ESB</div>
+          <div class="team-abbr">ESB</div>
+        </div>
+        <div class="match-score">
+          <div class="score-nums">3 - 2</div>
+          <div class="score-info">FT · Coupe</div>
+        </div>
+        <div class="team-info">
+          <div class="team-crest">SS</div>
+          <div class="team-abbr">SS</div>
+        </div>
+      </div>
+      <div class="match-card">
+        <div class="team-info">
+          <div class="team-crest">CS</div>
+          <div class="team-abbr">CS</div>
+        </div>
+        <div class="match-score">
+          <div class="score-nums">1 - 2</div>
+          <div class="score-info">FT · J25</div>
+        </div>
+        <div class="team-info">
+          <div class="team-crest">ESB</div>
+          <div class="team-abbr">ESB</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEWS SECTION -->
+<section class="news-section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Actualités</div>
+        <h2 class="section-title">Dernières nouvelles</h2>
+      </div>
+      <a href="#" class="see-all">Voir tout</a>
+    </div>
+
+    <div class="news-grid">
+      <a href="#" class="news-card">
+        <div class="news-img">
+          <div class="news-img-placeholder">⚽</div>
+          <div class="news-overlay"></div>
+        </div>
+        <div class="news-body">
+          <span class="news-tag">Match</span>
+          <h3 class="news-title">Victoire à domicile contre l'EST, l'ESB continue sur sa lancée</h3>
+          <p style="font-size:13px;color:rgba(255,255,255,0.65);line-height:1.5;">Une performance solide de l'équipe a permis d'arracher les 3 points face au leader. Les supporters ont chanté jusqu'à la fin.</p>
+          <div class="news-meta" style="margin-top:12px;">24 mai 2025 · 5 min</div>
+        </div>
+      </a>
+      <a href="#" class="news-card">
+        <div class="news-img" style="aspect-ratio:16/9">
+          <div class="news-img-placeholder">🏆</div>
+          <div class="news-overlay"></div>
+        </div>
+        <div class="news-body">
+          <span class="news-tag">Transferts</span>
+          <h3 class="news-title">Trois nouvelles recrues pour la saison prochaine</h3>
+          <div class="news-meta">22 mai 2025 · 3 min</div>
+        </div>
+      </a>
+      <a href="#" class="news-card">
+        <div class="news-img" style="aspect-ratio:16/9">
+          <div class="news-img-placeholder">👟</div>
+          <div class="news-overlay"></div>
+        </div>
+        <div class="news-body">
+          <span class="news-tag">Formation</span>
+          <h3 class="news-title">L'académie ESB décroche son titre régional U17</h3>
+          <div class="news-meta">20 mai 2025 · 4 min</div>
+        </div>
+      </a>
+      <a href="#" class="news-card">
+        <div class="news-img" style="aspect-ratio:16/9">
+          <div class="news-img-placeholder">🎽</div>
+          <div class="news-overlay"></div>
+        </div>
+        <div class="news-body">
+          <span class="news-tag">Boutique</span>
+          <h3 class="news-title">Le maillot domicile 2025/26 dévoilé</h3>
+          <div class="news-meta">18 mai 2025 · 2 min</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS SECTION -->
+<section class="stats-section">
+  <div class="container">
+    <div class="section-header" style="margin-bottom:48px">
+      <div>
+        <div class="section-label">Saison 2024/25</div>
+        <h2 class="section-title">L'ESB en chiffres</h2>
+      </div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-num">14</div>
+        <div class="stat-label">Victoires</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">8</div>
+        <div class="stat-label">Nuls</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">48</div>
+        <div class="stat-label">Buts marqués</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">5e</div>
+        <div class="stat-label">Classement</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SQUAD SECTION -->
+<section class="squad-section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Effectif</div>
+        <h2 class="section-title">L'équipe 2024/25</h2>
+      </div>
+      <a href="#" class="see-all">Voir tout</a>
+    </div>
+    <div class="squad-grid">
+      <a href="#" class="player-card">
+        <div class="player-photo">
+          <div class="player-silhouette" id="sil-1">🧤</div>
+          <div class="player-number">1</div>
+        </div>
+        <div class="player-info">
+          <div class="player-name">M. Ben Amor</div>
+          <div class="player-pos">Gardien</div>
+        </div>
+      </a>
+      <a href="#" class="player-card">
+        <div class="player-photo">
+          <div class="player-silhouette" id="sil-4">🧱</div>
+          <div class="player-number">4</div>
+        </div>
+        <div class="player-info">
+          <div class="player-name">K. Trabelsi</div>
+          <div class="player-pos">Défenseur</div>
+        </div>
+      </a>
+      <a href="#" class="player-card">
+        <div class="player-photo">
+          <div class="player-silhouette" id="sil-5">🛡️</div>
+          <div class="player-number">5</div>
+        </div>
+        <div class="player-info">
+          <div class="player-name">A. Jelassi</div>
+          <div class="player-pos">Défenseur</div>
+        </div>
+      </a>
+      <a href="#" class="player-card">
+        <div class="player-photo">
+          <div class="player-silhouette" id="sil-8">⚙️</div>
+          <div class="player-number">8</div>
+        </div>
+        <div class="player-info">
+          <div class="player-name">H. Meddeb</div>
+          <div class="player-pos">Milieu</div>
+        </div>
+      </a>
+      <a href="#" class="player-card">
+        <div class="player-photo">
+          <div class="player-silhouette" id="sil-10">⚡</div>
+          <div class="player-number">10</div>
+        </div>
+        <div class="player-info">
+          <div class="player-name">Y. Oueslati</div>
+          <div class="player-pos">Milieu offensif</div>
+        </div>
+      </a>
+      <a href="#" class="player-card">
+        <div class="player-photo">
+          <div class="player-silhouette" id="sil-9">🎯</div>
+          <div class="player-number">9</div>
+        </div>
+        <div class="player-info">
+          <div class="player-name">S. Cherif</div>
+          <div class="player-pos">Attaquant</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FIXTURES SECTION -->
+<section class="fixtures-section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Programme</div>
+        <h2 class="section-title">Prochains matchs</h2>
+      </div>
+      <a href="#" class="see-all">Calendrier complet</a>
+    </div>
+    <div class="fixtures-list">
+      <div class="fixture-row">
+        <div class="fixture-date">01 Jun</div>
+        <div class="fixture-comp">Ligue 1</div>
+        <div class="fixture-teams">
+          <div class="fixture-team home">ESB</div>
+          <div class="fixture-vs">vs</div>
+          <div class="fixture-team away">Club Africain</div>
+        </div>
+        <div class="fixture-score" style="color:var(--esb-gray);font-size:14px">15:00</div>
+        <a href="#" class="btn-primary" style="font-size:11px;padding:6px 14px">Billets</a>
+      </div>
+      <div class="fixture-row">
+        <div class="fixture-date">08 Jun</div>
+        <div class="fixture-comp">Ligue 1</div>
+        <div class="fixture-teams">
+          <div class="fixture-team home">CS Sfaxien</div>
+          <div class="fixture-vs">vs</div>
+          <div class="fixture-team away">ESB</div>
+        </div>
+        <div class="fixture-score" style="color:var(--esb-gray);font-size:14px">17:00</div>
+        <a href="#" class="btn-outline" style="font-size:11px;padding:5px 14px">Info</a>
+      </div>
+      <div class="fixture-row">
+        <div class="fixture-date">15 Jun</div>
+        <div class="fixture-comp">Coupe</div>
+        <div class="fixture-teams">
+          <div class="fixture-team home">ESB</div>
+          <div class="fixture-vs">vs</div>
+          <div class="fixture-team away">Stade Tunisien</div>
+        </div>
+        <div class="fixture-score" style="color:var(--esb-gray);font-size:14px">19:00</div>
+        <a href="#" class="btn-primary" style="font-size:11px;padding:6px 14px">Billets</a>
+      </div>
+      <div class="fixture-row" style="border-color:rgba(255,255,255,0.08)">
+        <div class="fixture-date">22 May</div>
+        <div class="fixture-comp">Ligue 1</div>
+        <div class="fixture-teams">
+          <div class="fixture-team home">ESB</div>
+          <div class="fixture-vs">vs</div>
+          <div class="fixture-team away">EST</div>
+        </div>
+        <div class="fixture-score">2 – 1</div>
+        <div class="fixture-result result-w">V</div>
+      </div>
+      <div class="fixture-row" style="border-color:rgba(255,255,255,0.08)">
+        <div class="fixture-date">15 May</div>
+        <div class="fixture-comp">Ligue 1</div>
+        <div class="fixture-teams">
+          <div class="fixture-team home">OB</div>
+          <div class="fixture-vs">vs</div>
+          <div class="fixture-team away">ESB</div>
+        </div>
+        <div class="fixture-score">0 – 0</div>
+        <div class="fixture-result result-d">N</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOP SECTION -->
+<section class="shop-section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Boutique officielle</div>
+        <h2 class="section-title">Portez les couleurs ESB</h2>
+      </div>
+      <a href="#" class="see-all">Voir la boutique</a>
+    </div>
+    <div class="shop-grid">
+      <a href="#" class="shop-card">
+        <div class="shop-img" id="shop-img-0">
+          🎽
+          <div class="shop-badge">NOUVEAU</div>
+        </div>
+        <div class="shop-info">
+          <div class="shop-name">Maillot Domicile 25/26</div>
+          <div class="shop-price">65 TND</div>
+        </div>
+      </a>
+      <a href="#" class="shop-card">
+        <div class="shop-img" id="shop-img-1">👕</div>
+        <div class="shop-info">
+          <div class="shop-name">Maillot Extérieur 25/26</div>
+          <div class="shop-price">65 TND</div>
+        </div>
+      </a>
+      <a href="#" class="shop-card">
+        <div class="shop-img" id="shop-img-2">🧢</div>
+        <div class="shop-info">
+          <div class="shop-name">Casquette ESB 2001</div>
+          <div class="shop-price">25 TND</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo-name">ESB</div>
+      <div class="footer-logo-sub">Espoir Sportif de Bouchema · Fondé 2001</div>
+      <p class="footer-desc">L'Espoir Sportif de Bouchema, fondé en 2001, est un club de football tunisien évoluant en Ligue 1. Fiers de nos couleurs bleu et blanc.</p>
+      <div class="footer-social">
+        <a href="#" class="social-btn">f</a>
+        <a href="#" class="social-btn">📸</a>
+        <a href="#" class="social-btn">𝕏</a>
+        <a href="#" class="social-btn">▶</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Club</h4>
+      <ul class="footer-links">
+        <li><a href="#">Histoire</a></li>
+        <li><a href="#">Stade Municipal</a></li>
+        <li><a href="#">Direction</a></li>
+        <li><a href="#">Partenaires</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Football</h4>
+      <ul class="footer-links">
+        <li><a href="#">Première équipe</a></li>
+        <li><a href="#">Équipe réserve</a></li>
+        <li><a href="#">Académie ESB</a></li>
+        <li><a href="#">Calendrier</a></li>
+        <li><a href="#">Classement</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Fans</h4>
+      <ul class="footer-links">
+        <li><a href="#">Billetterie</a></li>
+        <li><a href="#">Boutique</a></li>
+        <li><a href="#">Groupes de supporters</a></li>
+        <li><a href="#">Presse & Médias</a></li>
+        <li><a href="#">Newsletter</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Espoir Sportif de Bouchema. Tous droits réservés.</span>
+    <div class="footer-bottom-links">
+      <a href="#">Politique de confidentialité</a>
+      <a href="#">Mentions légales</a>
+      <a href="#">Cookies</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ===== PHOTO INJECTION from admin data (localStorage sync) =====
+  (function() {
+    // Player number → silhouette element id map
+    const playerNums = [1, 4, 5, 8, 10, 9];
+    const playerPhotos = JSON.parse(localStorage.getItem('esb_player_photos') || '{}');
+    playerNums.forEach(function(num) {
+      const sil = document.getElementById('sil-' + num);
+      if (!sil) return;
+      const url = playerPhotos[num];
+      if (url) {
+        const container = sil.parentElement; // .player-photo
+        const img = document.createElement('img');
+        img.src = url;
+        img.className = 'player-real-photo';
+        img.alt = 'Joueur ' + num;
+        img.onerror = function() { img.remove(); sil.style.opacity = '0.25'; };
+        img.onload = function() { sil.style.opacity = '0'; };
+        container.appendChild(img);
+      } else {
+        sil.style.opacity = '0.25';
+      }
+    });
+
+    // Shop photos
+    const shopPhotos = JSON.parse(localStorage.getItem('esb_shop_photos') || '{}');
+    [0, 1, 2].forEach(function(idx) {
+      const container = document.getElementById('shop-img-' + idx);
+      if (!container) return;
+      const url = shopPhotos[idx];
+      if (url) {
+        const img = document.createElement('img');
+        img.src = url;
+        img.className = 'shop-real-photo';
+        img.alt = 'Produit ' + idx;
+        img.onerror = function() { img.remove(); };
+        container.appendChild(img);
+      }
+    });
+  })();
+
+  // Hero slider
+  let current = 0;
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.hero-dot');
+
+  function goSlide(n) {
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = n;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+
+  setInterval(() => {
+    goSlide((current + 1) % slides.length);
+  }, 5000);
+
+  // Mobile nav toggle
+  function toggleMenu() {
+    document.getElementById('site-header').classList.toggle('nav-open');
+  }
+</script>
+</body>
+</html>
