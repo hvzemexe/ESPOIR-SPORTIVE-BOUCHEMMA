@@ -631,6 +631,30 @@ body {
 .confirm-title { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
 .confirm-msg { font-size: 13px; color: var(--esb-gray); margin-bottom: 22px; }
 .confirm-btns { display: flex; gap: 10px; justify-content: center; }
+
+/* ===== QUICK MATCH ===== */
+.topbar-btn.quick-match-btn {
+  background: linear-gradient(135deg, #c8a84b, #e6c96a);
+  color: #0d1525; font-weight: 800; letter-spacing: 1px;
+  box-shadow: 0 2px 12px rgba(200,168,75,0.35);
+  animation: pulse-gold 2.5s ease-in-out infinite;
+}
+.topbar-btn.quick-match-btn:hover { background: linear-gradient(135deg, #e6c96a, #f0da85); transform: translateY(-1px); }
+@keyframes pulse-gold {
+  0%,100% { box-shadow: 0 2px 12px rgba(200,168,75,0.35); }
+  50%      { box-shadow: 0 2px 22px rgba(200,168,75,0.65); }
+}
+#fab-quickmatch {
+  position: fixed; bottom: 28px; right: 28px; z-index: 900;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: linear-gradient(135deg, #c8a84b, #e6c96a);
+  color: #0d1525; font-size: 22px; border: none; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(200,168,75,0.5);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+#fab-quickmatch:hover { transform: scale(1.12); box-shadow: 0 6px 28px rgba(200,168,75,0.7); }
+#fab-quickmatch:active { transform: scale(0.96); }
 </style>
 </head>
 <body>
@@ -736,6 +760,7 @@ body {
   <div class="topbar" id="topbar">
     <div class="topbar-title" id="topbar-title">Aperçu général</div>
     <div class="topbar-right">
+      <button class="topbar-btn quick-match-btn" onclick="openQuickMatch()">⚡ Résultat rapide</button>
       <button class="topbar-btn secondary" onclick="window.open('esb_site.html','_blank')">👁 Voir le site</button>
       <button class="topbar-btn" onclick="publishSite()">🚀 Publier</button>
     </div>
@@ -1370,6 +1395,123 @@ body {
   </div>
 </div>
 
+<!-- ============================== QUICK MATCH MODAL ============================== -->
+<div class="modal-overlay" id="modal-quickmatch">
+  <div class="modal" style="width:500px">
+    <div class="modal-header" style="background:linear-gradient(135deg,#1a4a8a,#0d2d5e);padding:20px 24px">
+      <div>
+        <div class="modal-title" style="font-size:18px">⚡ Saisir un résultat</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:2px;letter-spacing:1px">Après le match · Saisie rapide</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-quickmatch')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Score board UI -->
+      <div id="qm-scoreboard" style="background:linear-gradient(135deg,#0d1525,#0a1020);border-radius:8px;padding:20px;margin-bottom:20px;text-align:center">
+        <div style="font-size:10px;letter-spacing:2px;color:#8898b0;text-transform:uppercase;margin-bottom:12px" id="qm-comp-display">Ligue 1 · Journée —</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:16px">
+          <div style="text-align:center;min-width:80px">
+            <div style="font-size:28px;font-weight:700;font-family:'Oswald',sans-serif;color:white" id="qm-t1-display">ESB</div>
+            <div style="font-size:10px;color:#8898b0;margin-top:2px">Domicile</div>
+          </div>
+          <div style="font-family:'Oswald',sans-serif;font-size:42px;font-weight:900;color:var(--esb-gold);min-width:100px" id="qm-score-display">— : —</div>
+          <div style="text-align:center;min-width:80px">
+            <div style="font-size:28px;font-weight:700;font-family:'Oswald',sans-serif;color:white" id="qm-t2-display">ADV</div>
+            <div style="font-size:10px;color:#8898b0;margin-top:2px">Extérieur</div>
+          </div>
+        </div>
+        <div id="qm-result-display" style="margin-top:12px;font-size:13px;font-weight:700;letter-spacing:2px"></div>
+      </div>
+
+      <!-- Form fields -->
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Date du match</label>
+          <input class="form-input" type="date" id="qm-date">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Compétition</label>
+          <select class="form-select" id="qm-comp" onchange="updateQMDisplay()">
+            <option>Ligue 1</option>
+            <option>Ligue 2</option>
+            <option>Coupe de Tunisie</option>
+            <option>Coupe de la Ligue</option>
+            <option>Match amical</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Journée / Phase</label>
+          <input class="form-input" id="qm-round" placeholder="ex: J28, Finale, 1/4" oninput="updateQMDisplay()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Lieu</label>
+          <select class="form-select" id="qm-venue" onchange="updateQMDisplay()">
+            <option value="home">🏠 Domicile</option>
+            <option value="away">✈️ Extérieur</option>
+            <option value="neutral">⚖️ Terrain neutre</option>
+          </select>
+        </div>
+        <div class="form-group span2">
+          <label class="form-label">Adversaire</label>
+          <input class="form-input" id="qm-opponent" placeholder="ex: Club Africain, CS Sfaxien..." oninput="updateQMDisplay()">
+        </div>
+
+        <!-- Score input -->
+        <div class="form-group span2">
+          <label class="form-label">Score final</label>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="flex:1;text-align:center">
+              <div style="font-size:10px;color:var(--esb-gray);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px" id="qm-label-t1">ESB</div>
+              <input class="form-input" type="number" id="qm-score-esb" min="0" max="30" placeholder="0" style="text-align:center;font-size:28px;font-family:'Oswald',sans-serif;font-weight:700;padding:10px" oninput="updateQMDisplay()">
+            </div>
+            <div style="font-size:28px;color:var(--esb-gray);font-weight:700;padding-top:20px">—</div>
+            <div style="flex:1;text-align:center">
+              <div style="font-size:10px;color:var(--esb-gray);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px" id="qm-label-t2">Adversaire</div>
+              <input class="form-input" type="number" id="qm-score-adv" min="0" max="30" placeholder="0" style="text-align:center;font-size:28px;font-family:'Oswald',sans-serif;font-weight:700;padding:10px" oninput="updateQMDisplay()">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group span2">
+          <label class="form-label">Buteurs ESB (optionnel)</label>
+          <input class="form-input" id="qm-scorers" placeholder="ex: Cherif 12', Oueslati 67', 89'">
+        </div>
+        <div class="form-group span2">
+          <label class="form-label">Note / Résumé (optionnel)</label>
+          <textarea class="form-input" id="qm-note" rows="2" placeholder="Résumé rapide du match..." style="resize:vertical"></textarea>
+        </div>
+
+        <!-- Options -->
+        <div class="form-group span2">
+          <label class="form-label" style="margin-bottom:10px">Ajouter automatiquement à :</label>
+          <div style="display:flex;gap:16px;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--esb-gray-light)">
+              <input type="checkbox" id="qm-add-results" checked style="accent-color:var(--esb-blue-light)"> Historique des résultats
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--esb-gray-light)">
+              <input type="checkbox" id="qm-add-ticker" checked style="accent-color:var(--esb-blue-light)"> Ticker du site
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--esb-gray-light)">
+              <input type="checkbox" id="qm-update-stats" checked style="accent-color:var(--esb-blue-light)"> Mettre à jour les stats
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="action-btn edit" onclick="closeModal('modal-quickmatch')">Annuler</button>
+        <button class="action-btn add" style="padding:10px 28px;font-size:14px" onclick="saveQuickMatch()">⚡ Enregistrer le résultat</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING QUICK MATCH BUTTON -->
+<button id="fab-quickmatch" onclick="openQuickMatch()" title="Saisir un résultat rapidement">
+  ⚡
+</button>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -1475,36 +1617,66 @@ async function saveData() {
 
 // ===== FIREBASE LOAD =====
 async function loadData() {
-  showLoadingOverlay(true);
+  showLoadingOverlay(true, 'Connexion à Firebase...');
   try {
-    const snap = await getDoc(SITE_DOC);
+    // Timeout after 10s in case Firebase hangs on mobile
+    const timeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('timeout')), 10000)
+    );
+    const snap = await Promise.race([getDoc(SITE_DOC), timeout]);
     if (snap.exists()) {
       data = Object.assign({}, DEFAULT_DATA, snap.data());
     } else {
       data = JSON.parse(JSON.stringify(DEFAULT_DATA));
-      await setDoc(SITE_DOC, data); // first-time init
+      await setDoc(SITE_DOC, data);
     }
+    showLoadingOverlay(false);
+    renderAll();
   } catch(e) {
     console.error('❌ Firebase load error:', e);
-    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    if (e.message === 'timeout') {
+      showLoadingOverlay(false);
+      showErrorBanner('⚠️ Firebase lent ou inaccessible. Données par défaut chargées.', true);
+      data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      renderAll();
+    } else {
+      showLoadingOverlay(false);
+      showErrorBanner('❌ Erreur Firebase : ' + e.message, false);
+      data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      renderAll();
+    }
   }
-  showLoadingOverlay(false);
-  renderAll();
 }
 
-function showLoadingOverlay(show) {
+function showErrorBanner(msg, dismissible) {
+  let el = document.getElementById('fb-error-banner');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'fb-error-banner';
+    el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:8000;background:#c0392b;color:white;padding:12px 20px;font-size:13px;font-family:Barlow,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:12px';
+    document.body.appendChild(el);
+  }
+  el.innerHTML = `<span>${msg}</span>${dismissible ? '<button onclick="this.parentElement.remove()" style="background:none;border:1px solid rgba(255,255,255,0.4);color:white;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px">OK</button>' : '<button onclick="location.reload()" style="background:none;border:1px solid rgba(255,255,255,0.4);color:white;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px">Réessayer</button>'}`;
+  el.style.display = 'flex';
+}
+
+function showLoadingOverlay(show, msg) {
   let el = document.getElementById('fb-loading');
   if (!el) {
     el = document.createElement('div');
     el.id = 'fb-loading';
-    el.style.cssText = 'position:fixed;inset:0;z-index:9998;background:rgba(6,11,22,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Barlow,sans-serif;color:white;gap:16px';
-    el.innerHTML = '<div style="font-size:36px;animation:spin 1s linear infinite">⚙️</div><div style="font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8898b0">Connexion à Firebase...</div>';
+    el.style.cssText = 'position:fixed;inset:0;z-index:9998;background:rgba(6,11,22,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Barlow,sans-serif;color:white;gap:16px';
     const style = document.createElement('style');
     style.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
     document.head.appendChild(style);
     document.body.appendChild(el);
   }
-  el.style.display = show ? 'flex' : 'none';
+  if (show) {
+    el.innerHTML = `<div style="font-size:36px;animation:spin 1s linear infinite">⚙️</div><div style="font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8898b0">${msg || 'Chargement...'}</div>`;
+    el.style.display = 'flex';
+  } else {
+    el.style.display = 'none';
+  }
 }
 
 // ===== GLOBAL DATA =====
@@ -1892,6 +2064,112 @@ function publishSite() {
   showToast('✅ Données publiées sur Firebase !', 'success');
 }
 
+// ===== QUICK MATCH =====
+function openQuickMatch() {
+  // Set today's date
+  document.getElementById('qm-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('qm-opponent').value = '';
+  document.getElementById('qm-score-esb').value = '';
+  document.getElementById('qm-score-adv').value = '';
+  document.getElementById('qm-scorers').value = '';
+  document.getElementById('qm-note').value = '';
+  document.getElementById('qm-round').value = '';
+  document.getElementById('qm-comp').value = 'Ligue 1';
+  document.getElementById('qm-venue').value = 'home';
+  document.getElementById('qm-add-results').checked = true;
+  document.getElementById('qm-add-ticker').checked = true;
+  document.getElementById('qm-update-stats').checked = true;
+  updateQMDisplay();
+  openModal('modal-quickmatch');
+}
+
+function updateQMDisplay() {
+  const venue    = document.getElementById('qm-venue').value;
+  const opponent = document.getElementById('qm-opponent').value.trim() || 'ADV';
+  const scoreESB = document.getElementById('qm-score-esb').value;
+  const scoreAdv = document.getElementById('qm-score-adv').value;
+  const comp     = document.getElementById('qm-comp').value;
+  const round    = document.getElementById('qm-round').value.trim();
+
+  const isHome = venue !== 'away';
+  const t1 = isHome ? 'ESB' : opponent;
+  const t2 = isHome ? opponent : 'ESB';
+  const s1 = isHome ? scoreESB : scoreAdv;
+  const s2 = isHome ? scoreAdv : scoreESB;
+
+  document.getElementById('qm-t1-display').textContent = t1;
+  document.getElementById('qm-t2-display').textContent = t2;
+  document.getElementById('qm-label-t1').textContent = isHome ? 'ESB' : opponent;
+  document.getElementById('qm-label-t2').textContent = isHome ? opponent : 'ESB';
+  document.getElementById('qm-comp-display').textContent = comp + (round ? ' · ' + round : '');
+
+  const hasScore = scoreESB !== '' && scoreAdv !== '';
+  document.getElementById('qm-score-display').textContent = hasScore ? `${s1} : ${s2}` : '— : —';
+
+  // Result badge
+  const resEl = document.getElementById('qm-result-display');
+  if (hasScore) {
+    const esbGoals = parseInt(scoreESB); const advGoals = parseInt(scoreAdv);
+    if (esbGoals > advGoals)      { resEl.textContent = '✅ VICTOIRE'; resEl.style.color = '#4caf50'; }
+    else if (esbGoals < advGoals) { resEl.textContent = '❌ DÉFAITE';  resEl.style.color = '#f44336'; }
+    else                          { resEl.textContent = '🟡 MATCH NUL'; resEl.style.color = '#c8a84b'; }
+  } else { resEl.textContent = ''; }
+}
+
+function saveQuickMatch() {
+  const opponent = document.getElementById('qm-opponent').value.trim();
+  const scoreESB = document.getElementById('qm-score-esb').value;
+  const scoreAdv = document.getElementById('qm-score-adv').value;
+
+  if (!opponent) { showToast('Veuillez saisir le nom de l\'adversaire.', 'error'); return; }
+  if (scoreESB === '' || scoreAdv === '') { showToast('Veuillez saisir le score.', 'error'); return; }
+
+  const venue  = document.getElementById('qm-venue').value;
+  const comp   = document.getElementById('qm-comp').value;
+  const round  = document.getElementById('qm-round').value.trim();
+  const date   = document.getElementById('qm-date').value;
+  const note   = document.getElementById('qm-note').value.trim();
+  const scorers = document.getElementById('qm-scorers').value.trim();
+
+  const esbG = parseInt(scoreESB), advG = parseInt(scoreAdv);
+  const isHome = venue !== 'away';
+  const t1 = isHome ? 'ESB' : opponent;
+  const t2 = isHome ? opponent : 'ESB';
+  const s1 = isHome ? esbG : advG;
+  const s2 = isHome ? advG : esbG;
+  const result = esbG > advG ? 'V' : esbG < advG ? 'D' : 'N';
+  const score  = `${s1} – ${s2}`;
+
+  // Add to results history
+  if (document.getElementById('qm-add-results').checked) {
+    data.results.unshift({ date, comp, t1, t2, score, result, note, scorers });
+  }
+
+  // Add to ticker
+  if (document.getElementById('qm-add-ticker').checked) {
+    const tickerInfo = `FT · ${round || comp}`;
+    data.ticker.unshift({ t1, t2, score: `${s1} - ${s2}`, info: tickerInfo });
+    if (data.ticker.length > 8) data.ticker = data.ticker.slice(0, 8); // keep last 8
+  }
+
+  // Update stats
+  if (document.getElementById('qm-update-stats').checked) {
+    const wins    = data.stats.find(s => s.label === 'Victoires');
+    const draws   = data.stats.find(s => s.label === 'Nuls');
+    const goals   = data.stats.find(s => s.label === 'Buts marqués');
+    if (wins  && result === 'V') wins.val  = String(parseInt(wins.val  || 0) + 1);
+    if (draws && result === 'N') draws.val = String(parseInt(draws.val || 0) + 1);
+    if (goals) goals.val = String(parseInt(goals.val || 0) + esbG);
+  }
+
+  saveData();
+  renderAll();
+  closeModal('modal-quickmatch');
+
+  const resultLabel = result === 'V' ? '✅ Victoire' : result === 'D' ? '❌ Défaite' : '🟡 Nul';
+  showToast(`${resultLabel} ${score} enregistrée !`, 'success');
+}
+
 function resetData() {
   if (!confirm('⚠️ Remettre toutes les données par défaut ? Toutes vos modifications seront perdues.')) return;
   data = JSON.parse(JSON.stringify(DEFAULT_DATA));
@@ -2070,11 +2348,13 @@ const SESSION_KEY = 'esb_admin_session';
 const LOCK_KEY    = 'esb_admin_lockout';
 const MAX_TRIES   = 5;
 let failCount = parseInt(sessionStorage.getItem('esb_fails') || '0');
+let dataLoaded = false;
 
 function checkSession() {
   const token = sessionStorage.getItem(SESSION_KEY);
   if (token === 'granted') {
     document.getElementById('login-screen').classList.add('hidden');
+    if (!dataLoaded) { dataLoaded = true; loadData(); }
   } else {
     checkLockout();
   }
@@ -2102,6 +2382,8 @@ function doLogin() {
     sessionStorage.setItem('esb_fails', '0');
     failCount = 0;
     document.getElementById('login-screen').classList.add('hidden');
+    // Load Firebase data NOW after login
+    if (!dataLoaded) { dataLoaded = true; loadData(); }
   } else {
     failCount++;
     sessionStorage.setItem('esb_fails', failCount);
@@ -2127,7 +2409,7 @@ function doLogin() {
 function showLocked(seconds) {
   document.getElementById('login-error').textContent = '';
   document.getElementById('login-locked').style.display = 'block';
-  document.getElementById('login-btn') && (document.querySelector('.login-btn').disabled = true);
+  document.querySelector('.login-btn').disabled = true;
   document.getElementById('lockdown-timer').textContent = seconds;
   const iv = setInterval(() => {
     seconds--;
@@ -2161,11 +2443,8 @@ function doLogout() {
   location.reload();
 }
 
-// Run auth check immediately
+// Run auth check on load
 checkSession();
-
-// Init — load from Firebase then render
-loadData();
 </script>
 </body>
 </html>
