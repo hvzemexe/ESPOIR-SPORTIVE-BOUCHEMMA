@@ -1386,65 +1386,129 @@ body {
   </div>
 </div>
 
-<script>
-// ===== DATA =====
-let data = {
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ===== FIREBASE CONFIG =====
+const firebaseConfig = {
+  apiKey: "AIzaSyCmBoNkbBEJZiPTuYbLrVqThCYBLQ_a0Z4",
+  authDomain: "esbv1-abc77.firebaseapp.com",
+  projectId: "esbv1-abc77",
+  storageBucket: "esbv1-abc77.firebasestorage.app",
+  messagingSenderId: "156968190806",
+  appId: "1:156968190806:web:b29a2e793acb336e1e4cf7"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const SITE_DOC = doc(db, 'esb', 'siteData');
+
+// ===== DEFAULT DATA =====
+const DEFAULT_DATA = {
   slides: [
-    { tag: 'Ligue 1 Tunisie · Journée 28', title1: 'ESB vs Club Africain', title2: 'Ce Dimanche', desc: 'Le derby s\'annonce explosif. L\'Espoir Sportif de Bouchema reçoit le Club Africain au Stade Municipal. Soyez là !', btn1: '🎟 Acheter des billets', btn2: 'Infos match →', status: 'active' },
-    { tag: 'Transfert · Officiel', title1: 'Bienvenue', title2: 'à l\'ESB 2024/25', desc: 'La direction sportive renforce l\'effectif avec de nouvelles recrues ambitieuses pour la nouvelle saison.', btn1: 'Voir l\'effectif', btn2: 'En savoir plus →', status: 'active' },
-    { tag: 'Boutique officielle · Nouveau', title1: 'Maillot', title2: 'Domicile 25/26', desc: 'Le nouveau maillot domicile de l\'ESB est disponible. Montrez vos couleurs, portez le bleu et blanc.', btn1: 'Commander maintenant', btn2: 'Voir la collection →', status: 'active' },
+    { tag: 'Ligue 1 Tunisie · Journée 28', title1: 'ESB vs Club Africain', title2: 'Ce Dimanche', desc: "Le derby s'annonce explosif. L'Espoir Sportif de Bouchema reçoit le Club Africain au Stade Municipal. Soyez là !", btn1: '🎟 Acheter des billets', btn2: 'Infos match →', status: 'active' },
+    { tag: 'Transfert · Officiel', title1: 'Bienvenue', title2: "à l'ESB 2024/25", desc: "La direction sportive renforce l'effectif avec de nouvelles recrues ambitieuses pour la nouvelle saison.", btn1: "Voir l'effectif", btn2: 'En savoir plus →', status: 'active' },
+    { tag: 'Boutique officielle · Nouveau', title1: 'Maillot', title2: 'Domicile 25/26', desc: "Le nouveau maillot domicile de l'ESB est disponible. Montrez vos couleurs, portez le bleu et blanc.", btn1: 'Commander maintenant', btn2: 'Voir la collection →', status: 'active' },
   ],
   news: [
-    { icon: '⚽', title: 'Victoire à domicile contre l\'EST, l\'ESB continue sur sa lancée', tag: 'Match', date: '2025-05-24', time: '5 min', status: 'published', body: 'Une performance solide...' },
+    { icon: '⚽', title: "Victoire à domicile contre l'EST, l'ESB continue sur sa lancée", tag: 'Match', date: '2025-05-24', time: '5 min', status: 'published', body: 'Une performance solide...' },
     { icon: '🏆', title: 'Trois nouvelles recrues pour la saison prochaine', tag: 'Transferts', date: '2025-05-22', time: '3 min', status: 'published', body: '' },
-    { icon: '👟', title: 'L\'académie ESB décroche son titre régional U17', tag: 'Formation', date: '2025-05-20', time: '4 min', status: 'published', body: '' },
+    { icon: '👟', title: "L'académie ESB décroche son titre régional U17", tag: 'Formation', date: '2025-05-20', time: '4 min', status: 'published', body: '' },
     { icon: '🎽', title: 'Le maillot domicile 2025/26 dévoilé', tag: 'Boutique', date: '2025-05-18', time: '2 min', status: 'draft', body: '' },
   ],
   squad: [
-    { icon: '🧤', name: 'M. Ben Amor', num: 1, pos: 'Gardien', status: 'active', photo: '' },
-    { icon: '🧱', name: 'K. Trabelsi', num: 4, pos: 'Défenseur', status: 'active', photo: '' },
-    { icon: '🛡️', name: 'A. Jelassi', num: 5, pos: 'Défenseur', status: 'active', photo: '' },
-    { icon: '⚙️', name: 'H. Meddeb', num: 8, pos: 'Milieu', status: 'active', photo: '' },
-    { icon: '⚡', name: 'Y. Oueslati', num: 10, pos: 'Milieu offensif', status: 'active', photo: '' },
-    { icon: '🎯', name: 'S. Cherif', num: 9, pos: 'Attaquant', status: 'injured', photo: '' },
+    { icon: '🧤', name: 'M. Ben Amor',  num: 1,  pos: 'Gardien',        status: 'active',  photo: '' },
+    { icon: '🧱', name: 'K. Trabelsi',  num: 4,  pos: 'Défenseur',      status: 'active',  photo: '' },
+    { icon: '🛡️', name: 'A. Jelassi',   num: 5,  pos: 'Défenseur',      status: 'active',  photo: '' },
+    { icon: '⚙️', name: 'H. Meddeb',    num: 8,  pos: 'Milieu',         status: 'active',  photo: '' },
+    { icon: '⚡', name: 'Y. Oueslati',  num: 10, pos: 'Milieu offensif', status: 'active',  photo: '' },
+    { icon: '🎯', name: 'S. Cherif',    num: 9,  pos: 'Attaquant',      status: 'injured', photo: '' },
   ],
   upcoming: [
-    { date: '2025-06-01', time: '15:00', comp: 'Ligue 1', opponent: 'Club Africain', venue: 'home' },
-    { date: '2025-06-08', time: '17:00', comp: 'Ligue 1', opponent: 'CS Sfaxien', venue: 'away' },
-    { date: '2025-06-15', time: '19:00', comp: 'Coupe', opponent: 'Stade Tunisien', venue: 'home' },
+    { date: '2025-06-01', time: '15:00', comp: 'Ligue 1', opponent: 'Club Africain',   venue: 'home' },
+    { date: '2025-06-08', time: '17:00', comp: 'Ligue 1', opponent: 'CS Sfaxien',      venue: 'away' },
+    { date: '2025-06-15', time: '19:00', comp: 'Coupe',   opponent: 'Stade Tunisien',  venue: 'home' },
   ],
   results: [
     { date: '2025-05-22', comp: 'Ligue 1', t1: 'ESB', t2: 'EST', score: '2 – 1', result: 'V' },
-    { date: '2025-05-15', comp: 'Ligue 1', t1: 'OB', t2: 'ESB', score: '0 – 0', result: 'N' },
+    { date: '2025-05-15', comp: 'Ligue 1', t1: 'OB',  t2: 'ESB', score: '0 – 0', result: 'N' },
   ],
   stats: [
     { val: '14', label: 'Victoires' },
-    { val: '8', label: 'Nuls' },
+    { val: '8',  label: 'Nuls' },
     { val: '48', label: 'Buts marqués' },
     { val: '5e', label: 'Classement' },
   ],
   shop: [
     { icon: '🎽', name: 'Maillot Domicile 25/26', price: 65, badge: 'NOUVEAU', status: 'available', photo: '' },
-    { icon: '👕', name: 'Maillot Extérieur 25/26', price: 65, badge: '', status: 'available', photo: '' },
-    { icon: '🧢', name: 'Casquette ESB 2001', price: 25, badge: '', status: 'available', photo: '' },
+    { icon: '👕', name: 'Maillot Extérieur 25/26', price: 65, badge: '',       status: 'available', photo: '' },
+    { icon: '🧢', name: 'Casquette ESB 2001',      price: 25, badge: '',       status: 'available', photo: '' },
   ],
   ticker: [
     { t1: 'ESB', t2: 'EST', score: '2 - 1', info: 'FT · J27' },
-    { t1: 'OB', t2: 'ESB', score: '0 - 0', info: 'FT · J26' },
-    { t1: 'ESB', t2: 'SS', score: '3 - 2', info: 'FT · Coupe' },
-    { t1: 'CS', t2: 'ESB', score: '1 - 2', info: 'FT · J25' },
+    { t1: 'OB',  t2: 'ESB', score: '0 - 0', info: 'FT · J26' },
+    { t1: 'ESB', t2: 'SS',  score: '3 - 2', info: 'FT · Coupe' },
+    { t1: 'CS',  t2: 'ESB', score: '1 - 2', info: 'FT · J25' },
   ],
   orders: [
-    { id: 'CMD-2025-001', client: 'Ahmed Trabelsi', phone: '+216 22 123 456', city: 'Bouchema', items: [{ name: 'Maillot Domicile 25/26', qty: 1, price: 65 }], total: 65, date: '2025-05-28', status: 'pending', note: '' },
-    { id: 'CMD-2025-002', client: 'Sonia Meddeb', phone: '+216 55 987 654', city: 'Tunis', items: [{ name: 'Maillot Extérieur 25/26', qty: 2, price: 65 }, { name: 'Casquette ESB 2001', qty: 1, price: 25 }], total: 155, date: '2025-05-27', status: 'pending', note: 'Livraison urgente' },
-    { id: 'CMD-2025-003', client: 'Mohamed Ben Salah', phone: '+216 98 456 123', city: 'Sfax', items: [{ name: 'Casquette ESB 2001', qty: 2, price: 25 }], total: 50, date: '2025-05-26', status: 'pending', note: '' },
-    { id: 'CMD-2025-004', client: 'Ines Cherni', phone: '+216 71 234 567', city: 'Sousse', items: [{ name: 'Maillot Domicile 25/26', qty: 1, price: 65 }], total: 65, date: '2025-05-25', status: 'confirmed', note: '' },
-    { id: 'CMD-2025-005', client: 'Karim Oueslati', phone: '+216 25 789 012', city: 'Bouchema', items: [{ name: 'Maillot Domicile 25/26', qty: 1, price: 65 }, { name: 'Maillot Extérieur 25/26', qty: 1, price: 65 }], total: 130, date: '2025-05-24', status: 'shipped', note: '' },
-    { id: 'CMD-2025-006', client: 'Fatma Jelassi', phone: '+216 50 345 678', city: 'Monastir', items: [{ name: 'Casquette ESB 2001', qty: 1, price: 25 }], total: 25, date: '2025-05-22', status: 'delivered', note: '' },
-    { id: 'CMD-2025-007', client: 'Yassine Hamdi', phone: '+216 94 567 890', city: 'Nabeul', items: [{ name: 'Maillot Extérieur 25/26', qty: 1, price: 65 }], total: 65, date: '2025-05-20', status: 'delivered', note: '' },
-    { id: 'CMD-2025-008', client: 'Rania Boukthir', phone: '+216 23 678 901', city: 'Bizerte', items: [{ name: 'Maillot Domicile 25/26', qty: 1, price: 65 }], total: 65, date: '2025-05-19', status: 'cancelled', note: 'Client injoignable' },
+    { id: 'CMD-2025-001', client: 'Ahmed Trabelsi',    phone: '+216 22 123 456', city: 'Bouchema', items: [{ name: 'Maillot Domicile 25/26', qty: 1, price: 65 }], total: 65,  date: '2025-05-28', status: 'pending',   note: '' },
+    { id: 'CMD-2025-002', client: 'Sonia Meddeb',      phone: '+216 55 987 654', city: 'Tunis',    items: [{ name: 'Maillot Extérieur 25/26', qty: 2, price: 65 }, { name: 'Casquette ESB 2001', qty: 1, price: 25 }], total: 155, date: '2025-05-27', status: 'pending',   note: 'Livraison urgente' },
+    { id: 'CMD-2025-003', client: 'Mohamed Ben Salah', phone: '+216 98 456 123', city: 'Sfax',     items: [{ name: 'Casquette ESB 2001', qty: 2, price: 25 }], total: 50,  date: '2025-05-26', status: 'pending',   note: '' },
+    { id: 'CMD-2025-004', client: 'Ines Cherni',       phone: '+216 71 234 567', city: 'Sousse',   items: [{ name: 'Maillot Domicile 25/26', qty: 1, price: 65 }], total: 65,  date: '2025-05-25', status: 'confirmed', note: '' },
+    { id: 'CMD-2025-005', client: 'Karim Oueslati',    phone: '+216 25 789 012', city: 'Bouchema', items: [{ name: 'Maillot Domicile 25/26', qty: 1, price: 65 }, { name: 'Maillot Extérieur 25/26', qty: 1, price: 65 }], total: 130, date: '2025-05-24', status: 'shipped',   note: '' },
+    { id: 'CMD-2025-006', client: 'Fatma Jelassi',     phone: '+216 50 345 678', city: 'Monastir', items: [{ name: 'Casquette ESB 2001', qty: 1, price: 25 }], total: 25,  date: '2025-05-22', status: 'delivered', note: '' },
+    { id: 'CMD-2025-007', client: 'Yassine Hamdi',     phone: '+216 94 567 890', city: 'Nabeul',   items: [{ name: 'Maillot Extérieur 25/26', qty: 1, price: 65 }], total: 65,  date: '2025-05-20', status: 'delivered', note: '' },
+    { id: 'CMD-2025-008', client: 'Rania Boukthir',    phone: '+216 23 678 901', city: 'Bizerte',  items: [{ name: 'Maillot Domicile 25/26', qty: 1, price: 65 }], total: 65,  date: '2025-05-19', status: 'cancelled', note: 'Client injoignable' },
   ]
 };
+
+// ===== FIREBASE SAVE =====
+async function saveData() {
+  try {
+    await setDoc(SITE_DOC, data);
+    console.log('✅ Firebase: données sauvegardées');
+  } catch(e) {
+    console.error('❌ Firebase save error:', e);
+    showToast('Erreur de sauvegarde Firebase !', 'error');
+  }
+}
+
+// ===== FIREBASE LOAD =====
+async function loadData() {
+  showLoadingOverlay(true);
+  try {
+    const snap = await getDoc(SITE_DOC);
+    if (snap.exists()) {
+      data = Object.assign({}, DEFAULT_DATA, snap.data());
+    } else {
+      data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      await setDoc(SITE_DOC, data); // first-time init
+    }
+  } catch(e) {
+    console.error('❌ Firebase load error:', e);
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+  showLoadingOverlay(false);
+  renderAll();
+}
+
+function showLoadingOverlay(show) {
+  let el = document.getElementById('fb-loading');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'fb-loading';
+    el.style.cssText = 'position:fixed;inset:0;z-index:9998;background:rgba(6,11,22,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Barlow,sans-serif;color:white;gap:16px';
+    el.innerHTML = '<div style="font-size:36px;animation:spin 1s linear infinite">⚙️</div><div style="font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8898b0">Connexion à Firebase...</div>';
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+    document.head.appendChild(style);
+    document.body.appendChild(el);
+  }
+  el.style.display = show ? 'flex' : 'none';
+}
+
+// ===== GLOBAL DATA =====
+let data = {};
 
 let editingIndex = -1;
 let editingSection = '';
@@ -1653,7 +1717,7 @@ function saveNews() {
   const n = { icon: v('f-news-icon'), title: v('f-news-title'), tag: v('f-news-tag'), date: v('f-news-date'), time: v('f-news-time'), status: v('f-news-status'), body: v('f-news-body') };
   if (editingIndex >= 0) data.news[editingIndex] = n;
   else data.news.push(n);
-  closeModal('modal-news'); renderNews();
+  closeModal('modal-news'); renderNews(); saveData();
   showToast(editingIndex >= 0 ? 'Article mis à jour !' : 'Article créé !', 'success');
 }
 
@@ -1683,7 +1747,7 @@ function savePlayer() {
   const p = { icon: v('f-player-icon'), name: v('f-player-name'), num: parseInt(v('f-player-num')), pos: v('f-player-pos'), status: v('f-player-status'), photo: v('f-player-photo') };
   if (editingIndex >= 0) data.squad[editingIndex] = p;
   else data.squad.push(p);
-  closeModal('modal-player'); renderSquad();
+  closeModal('modal-player'); renderSquad(); saveData();
   showToast(editingIndex >= 0 ? 'Joueur mis à jour !' : 'Joueur ajouté !', 'success');
 }
 
@@ -1720,7 +1784,7 @@ function saveFixture() {
     if (editingIndex >= 0 && editingSection === 'upcoming') data.upcoming[editingIndex] = f;
     else data.upcoming.push(f);
   }
-  closeModal('modal-fixture'); renderFixtures();
+  closeModal('modal-fixture'); renderFixtures(); saveData();
   showToast('Match sauvegardé !', 'success');
 }
 
@@ -1744,7 +1808,7 @@ function saveShop() {
   const p = { icon: v('f-shop-icon'), name: v('f-shop-name'), price: parseInt(v('f-shop-price')), badge: v('f-shop-badge'), status: v('f-shop-status'), photo: v('f-shop-photo') };
   if (editingIndex >= 0) data.shop[editingIndex] = p;
   else data.shop.push(p);
-  closeModal('modal-shop'); renderShop();
+  closeModal('modal-shop'); renderShop(); saveData();
   showToast(editingIndex >= 0 ? 'Produit mis à jour !' : 'Produit ajouté !', 'success');
 }
 
@@ -1761,7 +1825,7 @@ function saveTicker() {
   const t = { t1: v('f-tick-t1'), t2: v('f-tick-t2'), score: v('f-tick-score'), info: v('f-tick-info') };
   if (editingIndex >= 0) data.ticker[editingIndex] = t;
   else data.ticker.push(t);
-  closeModal('modal-ticker'); renderTicker();
+  closeModal('modal-ticker'); renderTicker(); saveData();
   showToast('Résultat sauvegardé !', 'success');
 }
 
@@ -1794,7 +1858,7 @@ function confirmDelete(section, idx) {
       else if (pendingDelete.section === 'shop') data.shop.splice(pendingDelete.idx, 1);
       else if (pendingDelete.section === 'ticker') data.ticker.splice(pendingDelete.idx, 1);
       else if (pendingDelete.section === 'orders') data.orders.splice(pendingDelete.idx, 1);
-      renderAll();
+      renderAll(); saveData();
       showToast('Élément supprimé.', 'error');
     }
     closeConfirm();
@@ -1824,15 +1888,16 @@ function formatDate(d) {
 }
 
 function publishSite() {
-  // Sync player photos to localStorage for site to read
-  const playerPhotos = {};
-  data.squad.forEach(p => { if (p.photo) playerPhotos[p.num] = p.photo; });
-  localStorage.setItem('esb_player_photos', JSON.stringify(playerPhotos));
-  // Sync shop photos
-  const shopPhotos = {};
-  data.shop.forEach((p, i) => { if (p.photo) shopPhotos[i] = p.photo; });
-  localStorage.setItem('esb_shop_photos', JSON.stringify(shopPhotos));
-  showToast('Modifications publiées avec succès !', 'success');
+  saveData();
+  showToast('✅ Données publiées sur Firebase !', 'success');
+}
+
+function resetData() {
+  if (!confirm('⚠️ Remettre toutes les données par défaut ? Toutes vos modifications seront perdues.')) return;
+  data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  saveData();
+  renderAll();
+  showToast('Données réinitialisées.', 'success');
 }
 
 // ===== SHOP PHOTO PREVIEW =====
@@ -1917,8 +1982,8 @@ function filterOrders() {
 function changeOrderStatus(idx, newStatus) {
   data.orders[idx].status = newStatus;
   const st = ORDER_STATUS[newStatus];
+  saveData();
   showToast(`Commande ${data.orders[idx].id} : ${st.label}`, 'success');
-  // Update KPIs and badge without re-rendering the whole table
   const pending = data.orders.filter(o => o.status === 'pending').length;
   document.getElementById('ord-pending').textContent = pending;
   document.getElementById('ord-delivered').textContent = data.orders.filter(o => o.status === 'delivered').length;
@@ -2099,8 +2164,8 @@ function doLogout() {
 // Run auth check immediately
 checkSession();
 
-// Init
-renderAll();
+// Init — load from Firebase then render
+loadData();
 </script>
 </body>
 </html>
