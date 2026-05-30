@@ -659,32 +659,6 @@ body {
 </head>
 <body>
 
-<!-- ===== LOGIN SCREEN ===== -->
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-shield">ESB</div>
-    <div class="login-title">ESB Admin</div>
-    <div class="login-sub">Espace réservé · Accès sécurisé</div>
-
-    <div class="login-field">
-      <label class="login-label">Identifiant</label>
-      <input class="login-input" type="text" id="login-user" placeholder="admin" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()">
-    </div>
-    <div class="login-field">
-      <label class="login-label">Mot de passe</label>
-      <input class="login-input" type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
-      <button class="show-pw-btn" type="button" onclick="togglePw()" title="Afficher/masquer">👁</button>
-    </div>
-
-    <button class="login-btn" onclick="doLogin()">🔐 Se connecter</button>
-    <div class="login-error" id="login-error"></div>
-    <div class="login-locked" id="login-locked">
-      🔒 Trop de tentatives. Réessayez dans <span id="lockdown-timer">60</span>s.
-    </div>
-    <div class="login-attempts" id="login-attempts"></div>
-  </div>
-</div>
-
 <!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-brand">
@@ -749,7 +723,7 @@ body {
         <div class="user-role">Super administrateur</div>
       </div>
     </div>
-    <button class="btn-logout" onclick="doLogout()">⏻ Déconnexion</button>
+    <button class="btn-logout" onclick="location.reload()">⏻ Actualiser</button>
   </div>
 </aside>
 
@@ -2341,110 +2315,8 @@ document.getElementById('confirm-overlay').addEventListener('click', (e) => {
   if (e.target === e.currentTarget) closeConfirm();
 });
 
-// ===== AUTH =====
-// Change these credentials to whatever you want
-const AUTH = { user: 'admin', pass: 'ESB2025!' };
-const SESSION_KEY = 'esb_admin_session';
-const LOCK_KEY    = 'esb_admin_lockout';
-const MAX_TRIES   = 5;
-let failCount = parseInt(sessionStorage.getItem('esb_fails') || '0');
-let dataLoaded = false;
-
-function checkSession() {
-  const token = sessionStorage.getItem(SESSION_KEY);
-  if (token === 'granted') {
-    document.getElementById('login-screen').classList.add('hidden');
-    if (!dataLoaded) { dataLoaded = true; loadData(); }
-  } else {
-    checkLockout();
-  }
-}
-
-function checkLockout() {
-  const lockUntil = parseInt(localStorage.getItem(LOCK_KEY) || '0');
-  const now = Date.now();
-  if (lockUntil > now) {
-    showLocked(Math.ceil((lockUntil - now) / 1000));
-  } else {
-    updateAttemptsLabel();
-  }
-}
-
-function doLogin() {
-  const lockUntil = parseInt(localStorage.getItem(LOCK_KEY) || '0');
-  if (Date.now() < lockUntil) return;
-
-  const user = document.getElementById('login-user').value.trim();
-  const pass = document.getElementById('login-pass').value;
-
-  if (user === AUTH.user && pass === AUTH.pass) {
-    sessionStorage.setItem(SESSION_KEY, 'granted');
-    sessionStorage.setItem('esb_fails', '0');
-    failCount = 0;
-    document.getElementById('login-screen').classList.add('hidden');
-    // Load Firebase data NOW after login
-    if (!dataLoaded) { dataLoaded = true; loadData(); }
-  } else {
-    failCount++;
-    sessionStorage.setItem('esb_fails', failCount);
-    const userEl = document.getElementById('login-user');
-    const passEl = document.getElementById('login-pass');
-    userEl.classList.add('error'); passEl.classList.add('error');
-    setTimeout(() => { userEl.classList.remove('error'); passEl.classList.remove('error'); }, 400);
-    passEl.value = '';
-
-    const remaining = MAX_TRIES - failCount;
-    if (failCount >= MAX_TRIES) {
-      const until = Date.now() + 60000;
-      localStorage.setItem(LOCK_KEY, until);
-      failCount = 0; sessionStorage.setItem('esb_fails', '0');
-      showLocked(60);
-    } else {
-      document.getElementById('login-error').textContent = 'Identifiant ou mot de passe incorrect.';
-      updateAttemptsLabel();
-    }
-  }
-}
-
-function showLocked(seconds) {
-  document.getElementById('login-error').textContent = '';
-  document.getElementById('login-locked').style.display = 'block';
-  document.querySelector('.login-btn').disabled = true;
-  document.getElementById('lockdown-timer').textContent = seconds;
-  const iv = setInterval(() => {
-    seconds--;
-    const el = document.getElementById('lockdown-timer');
-    if (el) el.textContent = seconds;
-    if (seconds <= 0) {
-      clearInterval(iv);
-      document.getElementById('login-locked').style.display = 'none';
-      document.querySelector('.login-btn').disabled = false;
-      localStorage.removeItem(LOCK_KEY);
-      updateAttemptsLabel();
-    }
-  }, 1000);
-}
-
-function updateAttemptsLabel() {
-  const el = document.getElementById('login-attempts');
-  if (!el) return;
-  el.textContent = failCount > 0
-    ? `${failCount} tentative(s) échouée(s) · ${MAX_TRIES - failCount} restante(s) avant blocage`
-    : '';
-}
-
-function togglePw() {
-  const inp = document.getElementById('login-pass');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-}
-
-function doLogout() {
-  sessionStorage.removeItem(SESSION_KEY);
-  location.reload();
-}
-
-// Run auth check on load
-checkSession();
+// Init — load from Firebase
+loadData();
 </script>
 </body>
 </html>
