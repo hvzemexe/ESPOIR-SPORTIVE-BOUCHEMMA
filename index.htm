@@ -1273,10 +1273,9 @@
   </div>
 </footer>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
 const firebaseConfig = {
   apiKey: "AIzaSyCmBoNkbBEJZiPTuYbLrVqThCYBLQ_a0Z4",
   authDomain: "esbv1-abc77.firebaseapp.com",
@@ -1285,27 +1284,26 @@ const firebaseConfig = {
   messagingSenderId: "156968190806",
   appId: "1:156968190806:web:b29a2e793acb336e1e4cf7"
 };
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 // Listen in real-time — site updates instantly when admin saves
-onSnapshot(doc(db, 'esb', 'siteData'), (snap) => {
-  if (!snap.exists()) return;
+db.collection('esb').doc('siteData').onSnapshot(function(snap) {
+  if (!snap.exists) return;
   const d = snap.data();
 
   // --- Player photos ---
   if (d.squad) {
-    d.squad.forEach(p => {
+    d.squad.forEach(function(p) {
       const sil = document.getElementById('sil-' + p.num);
       if (!sil) return;
-      // Remove any existing real photo
       const existing = sil.parentElement.querySelector('.player-real-photo');
       if (existing) existing.remove();
       if (p.photo) {
         const img = document.createElement('img');
         img.src = p.photo; img.className = 'player-real-photo';
-        img.onerror = () => img.remove();
-        img.onload  = () => { sil.style.opacity = '0'; };
+        img.onerror = function() { img.remove(); };
+        img.onload  = function() { sil.style.opacity = '0'; };
         sil.parentElement.appendChild(img);
       } else { sil.style.opacity = '0.25'; }
     });
@@ -1313,7 +1311,7 @@ onSnapshot(doc(db, 'esb', 'siteData'), (snap) => {
 
   // --- Shop products ---
   if (d.shop) {
-    d.shop.forEach((p, i) => {
+    d.shop.forEach(function(p, i) {
       const container = document.getElementById('shop-img-' + i);
       if (!container) return;
       const existing = container.querySelector('.shop-real-photo');
@@ -1321,7 +1319,7 @@ onSnapshot(doc(db, 'esb', 'siteData'), (snap) => {
       if (p.photo) {
         const img = document.createElement('img');
         img.src = p.photo; img.className = 'shop-real-photo';
-        img.onerror = () => img.remove();
+        img.onerror = function() { img.remove(); };
         container.appendChild(img);
       }
       const card = container.closest('.shop-card');
