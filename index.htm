@@ -590,6 +590,7 @@
     cursor: pointer; transition: var(--transition);
     border: 1px solid rgba(255,255,255,0.06);
     text-decoration: none; display: block; color: white;
+    position: relative;
   }
   .shop-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); border-color: var(--esb-blue-mid); }
   .shop-img {
@@ -605,20 +606,122 @@
     transition: transform 0.4s ease;
   }
   .shop-card:hover .shop-real-photo { transform: scale(1.05); }
+  /* Hover overlay with "Commander" */
+  .shop-img::after {
+    content: '🛒 Commander';
+    position: absolute; inset: 0;
+    background: rgba(10, 28, 70, 0.82);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; font-weight: 800; letter-spacing: 2px;
+    text-transform: uppercase; color: white;
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .shop-card:hover .shop-img::after { opacity: 1; }
   .shop-badge {
     position: absolute; top: 12px; right: 12px;
     background: var(--esb-gold);
     color: #1a0000; font-size: 9px; font-weight: 800;
     letter-spacing: 1px; text-transform: uppercase;
     padding: 4px 8px; border-radius: 2px;
+    z-index: 2;
   }
-  .shop-info { padding: 16px; }
+  .shop-info { padding: 16px 16px 18px; }
   .shop-name {
     font-family: 'Oswald', sans-serif;
     font-size: 16px; font-weight: 600;
     text-transform: uppercase; margin-bottom: 6px;
   }
-  .shop-price { font-size: 14px; color: var(--esb-blue-light); font-weight: 600; }
+  .shop-price {
+    font-size: 15px; font-weight: 700;
+    color: var(--esb-gold);
+    font-family: 'Oswald', sans-serif;
+  }
+
+  /* ===== ORDER MODAL ===== */
+  .order-overlay {
+    position: fixed; inset: 0; z-index: 2000;
+    background: rgba(4,8,20,0.85); backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px; opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .order-overlay.open { opacity: 1; pointer-events: all; }
+  .order-modal {
+    background: #0d1525; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.08);
+    width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+    transform: translateY(30px); transition: transform 0.25s;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+  }
+  .order-overlay.open .order-modal { transform: translateY(0); }
+  .order-modal-hd {
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  }
+  .order-product-img {
+    width: 64px; height: 64px; border-radius: 6px; object-fit: cover;
+    background: linear-gradient(135deg, var(--esb-blue), #0d2050);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; flex-shrink: 0; overflow: hidden;
+  }
+  .order-product-img img { width: 100%; height: 100%; object-fit: cover; }
+  .order-modal-title { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; text-transform: uppercase; }
+  .order-modal-price { font-size: 20px; font-weight: 800; color: var(--esb-gold); font-family: 'Oswald', sans-serif; margin-top: 4px; }
+  .order-close { background: none; border: none; color: var(--esb-gray); font-size: 20px; cursor: pointer; padding: 4px; line-height: 1; }
+  .order-close:hover { color: white; }
+  .order-body { padding: 20px 24px; }
+  .order-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--esb-gray); margin-bottom: 8px; display: block; }
+  .order-sizes { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .size-btn {
+    padding: 8px 14px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.04); color: var(--esb-gray-light);
+    font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .size-btn:hover { border-color: var(--esb-blue-light); color: white; }
+  .size-btn.active { background: var(--esb-blue-mid); border-color: var(--esb-blue-light); color: white; }
+  .order-qty { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .qty-btn {
+    width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.05); color: white; font-size: 18px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+  }
+  .qty-btn:hover { background: var(--esb-blue-mid); border-color: var(--esb-blue-light); }
+  .qty-val { font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700; min-width: 28px; text-align: center; }
+  .order-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 20px 0; }
+  .order-input {
+    width: 100%; padding: 11px 14px; margin-bottom: 12px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 5px; color: white; font-family: 'Barlow', sans-serif; font-size: 14px;
+    outline: none; transition: border-color 0.2s; box-sizing: border-box;
+  }
+  .order-input:focus { border-color: var(--esb-blue-light); background: rgba(58,127,212,0.08); }
+  .order-input.error { border-color: #e74c3c; }
+  .order-input::placeholder { color: rgba(255,255,255,0.25); }
+  .order-total-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; border-top: 1px solid rgba(255,255,255,0.07); margin-top: 8px;
+  }
+  .order-total-label { font-size: 13px; color: var(--esb-gray); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+  .order-total-val { font-family: 'Oswald', sans-serif; font-size: 24px; font-weight: 800; color: var(--esb-gold); }
+  .order-submit {
+    width: 100%; padding: 14px; margin-top: 16px;
+    background: linear-gradient(135deg, var(--esb-blue-mid), var(--esb-blue-light));
+    border: none; border-radius: 6px; color: white;
+    font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+  }
+  .order-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+  .order-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .order-success {
+    text-align: center; padding: 32px 24px;
+  }
+  .order-success-icon { font-size: 52px; margin-bottom: 16px; }
+  .order-success-title { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; color: #4caf50; }
+  .order-success-msg { font-size: 14px; color: var(--esb-gray); line-height: 1.6; }
 
   /* ===== FOOTER ===== */
   footer {
@@ -1190,7 +1293,7 @@
       <a href="#" class="see-all">Voir la boutique</a>
     </div>
     <div class="shop-grid">
-      <a href="#" class="shop-card">
+      <div class="shop-card" onclick="openOrder(0)">
         <div class="shop-img" id="shop-img-0">
           🎽
           <div class="shop-badge">NOUVEAU</div>
@@ -1199,24 +1302,91 @@
           <div class="shop-name">Maillot Domicile 25/26</div>
           <div class="shop-price">65 TND</div>
         </div>
-      </a>
-      <a href="#" class="shop-card">
+      </div>
+      <div class="shop-card" onclick="openOrder(1)">
         <div class="shop-img" id="shop-img-1">👕</div>
         <div class="shop-info">
           <div class="shop-name">Maillot Extérieur 25/26</div>
           <div class="shop-price">65 TND</div>
         </div>
-      </a>
-      <a href="#" class="shop-card">
+      </div>
+      <div class="shop-card" onclick="openOrder(2)">
         <div class="shop-img" id="shop-img-2">🧢</div>
         <div class="shop-info">
           <div class="shop-name">Casquette ESB 2001</div>
           <div class="shop-price">25 TND</div>
         </div>
-      </a>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- ===== ORDER MODAL ===== -->
+<div class="order-overlay" id="order-overlay" onclick="if(event.target===this)closeOrder()">
+  <div class="order-modal" id="order-modal">
+
+    <!-- Product header -->
+    <div class="order-modal-hd">
+      <div style="display:flex;gap:14px;align-items:center;flex:1">
+        <div class="order-product-img" id="om-img">🎽</div>
+        <div>
+          <div class="order-modal-title" id="om-name">Maillot Domicile</div>
+          <div class="order-modal-price" id="om-price">65 TND</div>
+        </div>
+      </div>
+      <button class="order-close" onclick="closeOrder()">✕</button>
+    </div>
+
+    <!-- Form -->
+    <div class="order-body" id="om-body">
+
+      <!-- Size -->
+      <div id="om-size-section">
+        <span class="order-label">Taille</span>
+        <div class="order-sizes" id="om-sizes">
+          <button class="size-btn" onclick="selectSize(this)">S</button>
+          <button class="size-btn" onclick="selectSize(this)">M</button>
+          <button class="size-btn active" onclick="selectSize(this)">L</button>
+          <button class="size-btn" onclick="selectSize(this)">XL</button>
+          <button class="size-btn" onclick="selectSize(this)">XXL</button>
+        </div>
+      </div>
+
+      <!-- Quantity -->
+      <span class="order-label">Quantité</span>
+      <div class="order-qty">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-val" id="om-qty">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+
+      <hr class="order-divider">
+
+      <!-- Client info -->
+      <span class="order-label">Vos coordonnées</span>
+      <input class="order-input" type="text" id="om-client" placeholder="Nom complet *">
+      <input class="order-input" type="tel" id="om-phone" placeholder="Numéro de téléphone *">
+      <input class="order-input" type="text" id="om-city" placeholder="Ville / Gouvernorat *">
+      <input class="order-input" type="text" id="om-address" placeholder="Adresse de livraison (optionnel)">
+      <textarea class="order-input" id="om-note" rows="2" placeholder="Note (taille exacte, instructions...)" style="resize:vertical"></textarea>
+
+      <!-- Total -->
+      <div class="order-total-row">
+        <span class="order-total-label">Total à payer</span>
+        <span class="order-total-val" id="om-total">65 TND</span>
+      </div>
+
+      <div style="font-size:11px;color:var(--esb-gray);margin-bottom:4px;text-align:center">
+        💳 Paiement à la livraison · 🚚 Livraison dans toute la Tunisie
+      </div>
+
+      <button class="order-submit" id="om-submit" onclick="submitOrder()">
+        ✅ Confirmer la commande
+      </button>
+    </div>
+
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer>
@@ -1309,6 +1479,13 @@ db.collection('esb').doc('siteData').onSnapshot(function(snap) {
     });
   }
 
+  // --- Sync product data for order modal ---
+  if (d.shop) {
+    siteProducts = d.shop.map(function(p) {
+      return { name: p.name, price: p.price, icon: p.icon, hasSize: p.icon === '🎽' || p.icon === '👕' || (p.name && p.name.toLowerCase().includes('maillot')) };
+    });
+  }
+
   // --- Shop products ---
   if (d.shop) {
     d.shop.forEach(function(p, i) {
@@ -1355,6 +1532,188 @@ db.collection('esb').doc('siteData').onSnapshot(function(snap) {
   // Mobile nav toggle
   function toggleMenu() {
     document.getElementById('site-header').classList.toggle('nav-open');
+  }
+
+  // ===== ORDER SYSTEM =====
+  // Products — synced from Firebase via onSnapshot, defaults here
+  let siteProducts = [
+    { name: 'Maillot Domicile 25/26', price: 65, icon: '🎽', hasSize: true },
+    { name: 'Maillot Extérieur 25/26', price: 65, icon: '👕', hasSize: true },
+    { name: 'Casquette ESB 2001', price: 25, icon: '🧢', hasSize: false },
+  ];
+  let orderIdx = 0;
+  let orderQty = 1;
+  let orderSize = 'L';
+
+  function openOrder(idx) {
+    orderIdx = idx;
+    orderQty = 1;
+    orderSize = 'L';
+    const p = siteProducts[idx] || siteProducts[0];
+
+    // Header
+    document.getElementById('om-name').textContent = p.name;
+    document.getElementById('om-price').textContent = p.price + ' TND';
+
+    // Image — use real photo if available
+    const imgContainer = document.getElementById('om-img');
+    const shopImgEl = document.getElementById('shop-img-' + idx);
+    const realPhoto = shopImgEl && shopImgEl.querySelector('img.shop-real-photo');
+    if (realPhoto) {
+      imgContainer.innerHTML = `<img src="${realPhoto.src}" style="width:100%;height:100%;object-fit:cover">`;
+    } else {
+      imgContainer.textContent = p.icon || '🎽';
+    }
+
+    // Size section
+    document.getElementById('om-size-section').style.display = p.hasSize ? 'block' : 'none';
+    document.querySelectorAll('.size-btn').forEach(b => {
+      b.classList.toggle('active', b.textContent === 'L');
+    });
+
+    // Reset form
+    document.getElementById('om-qty').textContent = '1';
+    document.getElementById('om-client').value = '';
+    document.getElementById('om-phone').value = '';
+    document.getElementById('om-city').value = '';
+    document.getElementById('om-address').value = '';
+    document.getElementById('om-note').value = '';
+    document.querySelectorAll('.order-input').forEach(el => el.classList.remove('error'));
+    document.getElementById('om-submit').disabled = false;
+    document.getElementById('om-submit').textContent = '✅ Confirmer la commande';
+    document.getElementById('om-body').innerHTML = document.getElementById('om-body').innerHTML; // reset
+
+    // Show body (not success)
+    rebuildOrderBody(p);
+    updateTotal();
+    document.getElementById('order-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function rebuildOrderBody(p) {
+    document.getElementById('om-body').innerHTML = `
+      <div id="om-size-section" style="display:${p.hasSize ? 'block' : 'none'}">
+        <span class="order-label">Taille</span>
+        <div class="order-sizes" id="om-sizes">
+          <button class="size-btn" onclick="selectSize(this)">S</button>
+          <button class="size-btn" onclick="selectSize(this)">M</button>
+          <button class="size-btn active" onclick="selectSize(this)">L</button>
+          <button class="size-btn" onclick="selectSize(this)">XL</button>
+          <button class="size-btn" onclick="selectSize(this)">XXL</button>
+        </div>
+      </div>
+      <span class="order-label">Quantité</span>
+      <div class="order-qty">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <span class="qty-val" id="om-qty">1</span>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+      <hr class="order-divider">
+      <span class="order-label">Vos coordonnées</span>
+      <input class="order-input" type="text" id="om-client" placeholder="Nom complet *">
+      <input class="order-input" type="tel" id="om-phone" placeholder="Numéro de téléphone *">
+      <input class="order-input" type="text" id="om-city" placeholder="Ville / Gouvernorat *">
+      <input class="order-input" type="text" id="om-address" placeholder="Adresse de livraison (optionnel)">
+      <textarea class="order-input" id="om-note" rows="2" placeholder="Note (taille exacte, instructions...)" style="resize:vertical"></textarea>
+      <div class="order-total-row">
+        <span class="order-total-label">Total à payer</span>
+        <span class="order-total-val" id="om-total">${p.price} TND</span>
+      </div>
+      <div style="font-size:11px;color:var(--esb-gray);margin-bottom:4px;text-align:center">
+        💳 Paiement à la livraison · 🚚 Livraison dans toute la Tunisie
+      </div>
+      <button class="order-submit" id="om-submit" onclick="submitOrder()">✅ Confirmer la commande</button>
+    `;
+    orderQty = 1; orderSize = 'L';
+  }
+
+  function closeOrder() {
+    document.getElementById('order-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function selectSize(btn) {
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    orderSize = btn.textContent;
+  }
+
+  function changeQty(delta) {
+    orderQty = Math.max(1, Math.min(10, orderQty + delta));
+    document.getElementById('om-qty').textContent = orderQty;
+    updateTotal();
+  }
+
+  function updateTotal() {
+    const p = siteProducts[orderIdx];
+    if (!p) return;
+    const totalEl = document.getElementById('om-total');
+    if (totalEl) totalEl.textContent = (p.price * orderQty) + ' TND';
+  }
+
+  async function submitOrder() {
+    const client  = (document.getElementById('om-client')?.value || '').trim();
+    const phone   = (document.getElementById('om-phone')?.value || '').trim();
+    const city    = (document.getElementById('om-city')?.value || '').trim();
+    const address = (document.getElementById('om-address')?.value || '').trim();
+    const note    = (document.getElementById('om-note')?.value || '').trim();
+    const p       = siteProducts[orderIdx];
+
+    // Validate
+    let valid = true;
+    ['om-client','om-phone','om-city'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el || !el.value.trim()) { if(el) el.classList.add('error'); valid = false; }
+      else if(el) el.classList.remove('error');
+    });
+    if (!valid) return;
+
+    const btn = document.getElementById('om-submit');
+    btn.disabled = true;
+    btn.textContent = '⏳ Envoi en cours...';
+
+    // Build order object
+    const now = new Date();
+    const orderId = 'CMD-' + now.getFullYear() + '-' + String(Date.now()).slice(-6);
+    const order = {
+      id: orderId,
+      client, phone, city, address,
+      items: [{ name: p.name + (p.hasSize ? ' · Taille ' + orderSize : ''), qty: orderQty, price: p.price }],
+      total: p.price * orderQty,
+      date: now.toISOString().split('T')[0],
+      status: 'pending',
+      note: note + (p.hasSize ? (note ? ' | ' : '') + 'Taille: ' + orderSize : ''),
+      source: 'site'
+    };
+
+    try {
+      // Load current data, push order, save back
+      const snap = await db.collection('esb').doc('siteData').get();
+      const current = snap.exists ? snap.data() : {};
+      const orders = current.orders || [];
+      orders.unshift(order);
+      await db.collection('esb').doc('siteData').update({ orders });
+
+      // Show success
+      document.getElementById('om-body').innerHTML = `
+        <div class="order-success">
+          <div class="order-success-icon">🎉</div>
+          <div class="order-success-title">Commande confirmée !</div>
+          <div class="order-success-msg">
+            Merci <strong>${client}</strong> !<br><br>
+            Votre commande <strong>${orderId}</strong> a bien été reçue.<br>
+            Un membre de l'ESB vous contactera au <strong>${phone}</strong> pour confirmer la livraison.<br><br>
+            <span style="color:var(--esb-gold)">💛 Allez l'ESB !</span>
+          </div>
+          <button class="order-submit" style="margin-top:24px" onclick="closeOrder()">Fermer</button>
+        </div>
+      `;
+    } catch(e) {
+      console.error('Order error:', e);
+      btn.disabled = false;
+      btn.textContent = '✅ Confirmer la commande';
+      alert('Erreur lors de l\'envoi. Vérifiez votre connexion et réessayez.');
+    }
   }
 </script>
 </body>
