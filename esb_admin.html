@@ -1502,10 +1502,9 @@ body {
   </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
 // ===== FIREBASE CONFIG =====
 const firebaseConfig = {
   apiKey: "AIzaSyCmBoNkbBEJZiPTuYbLrVqThCYBLQ_a0Z4",
@@ -1515,9 +1514,73 @@ const firebaseConfig = {
   messagingSenderId: "156968190806",
   appId: "1:156968190806:web:b29a2e793acb336e1e4cf7"
 };
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
-const SITE_DOC = doc(db, 'esb', 'siteData');
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const SITE_DOC = db.collection('esb').doc('siteData');
+
+// ===== FIREBASE SAVE =====
+async function saveData() {
+  try {
+    await SITE_DOC.set(data);
+  } catch(e) {
+    console.error('❌ Firebase save error:', e);
+    showToast('Erreur de sauvegarde !', 'error');
+  }
+}
+
+// ===== FIREBASE LOAD =====
+async function loadData() {
+  showLoadingOverlay(true, 'Connexion à Firebase...');
+  try {
+    const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 10000));
+    const snap = await Promise.race([SITE_DOC.get(), timeout]);
+    if (snap.exists) {
+      data = Object.assign({}, DEFAULT_DATA, snap.data());
+    } else {
+      data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      await SITE_DOC.set(data);
+    }
+    showLoadingOverlay(false);
+    renderAll();
+  } catch(e) {
+    console.error('❌ Firebase load error:', e);
+    showLoadingOverlay(false);
+    showErrorBanner(e.message === 'timeout' ? '⚠️ Firebase lent. Données par défaut chargées.' : '❌ Erreur Firebase : ' + e.message, true);
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    renderAll();
+  }
+}
+
+function showLoadingOverlay(show, msg) {
+  let el = document.getElementById('fb-loading');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'fb-loading';
+    el.style.cssText = 'position:fixed;inset:0;z-index:9998;background:rgba(6,11,22,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Barlow,sans-serif;color:white;gap:16px';
+    const style = document.createElement('style');
+    style.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+    document.head.appendChild(style);
+    document.body.appendChild(el);
+  }
+  if (show) {
+    el.innerHTML = `<div style="font-size:36px;animation:spin 1s linear infinite">⚙️</div><div style="font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8898b0">${msg || 'Chargement...'}</div>`;
+    el.style.display = 'flex';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+function showErrorBanner(msg, dismissible) {
+  let el = document.getElementById('fb-error-banner');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'fb-error-banner';
+    el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:8000;background:#c0392b;color:white;padding:12px 20px;font-size:13px;font-family:Barlow,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:12px';
+    document.body.appendChild(el);
+  }
+  el.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" style="background:none;border:1px solid rgba(255,255,255,0.4);color:white;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px">${dismissible ? 'OK' : 'Réessayer'}</button>`;
+  el.style.display = 'flex';
+}
 
 // ===== DEFAULT DATA =====
 const DEFAULT_DATA = {
@@ -1577,81 +1640,6 @@ const DEFAULT_DATA = {
     { id: 'CMD-2025-008', client: 'Rania Boukthir',    phone: '+216 23 678 901', city: 'Bizerte',  items: [{ name: 'Maillot Domicile 25/26', qty: 1, price: 65 }], total: 65,  date: '2025-05-19', status: 'cancelled', note: 'Client injoignable' },
   ]
 };
-
-// ===== FIREBASE SAVE =====
-async function saveData() {
-  try {
-    await setDoc(SITE_DOC, data);
-    console.log('✅ Firebase: données sauvegardées');
-  } catch(e) {
-    console.error('❌ Firebase save error:', e);
-    showToast('Erreur de sauvegarde Firebase !', 'error');
-  }
-}
-
-// ===== FIREBASE LOAD =====
-async function loadData() {
-  showLoadingOverlay(true, 'Connexion à Firebase...');
-  try {
-    // Timeout after 10s in case Firebase hangs on mobile
-    const timeout = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('timeout')), 10000)
-    );
-    const snap = await Promise.race([getDoc(SITE_DOC), timeout]);
-    if (snap.exists()) {
-      data = Object.assign({}, DEFAULT_DATA, snap.data());
-    } else {
-      data = JSON.parse(JSON.stringify(DEFAULT_DATA));
-      await setDoc(SITE_DOC, data);
-    }
-    showLoadingOverlay(false);
-    renderAll();
-  } catch(e) {
-    console.error('❌ Firebase load error:', e);
-    if (e.message === 'timeout') {
-      showLoadingOverlay(false);
-      showErrorBanner('⚠️ Firebase lent ou inaccessible. Données par défaut chargées.', true);
-      data = JSON.parse(JSON.stringify(DEFAULT_DATA));
-      renderAll();
-    } else {
-      showLoadingOverlay(false);
-      showErrorBanner('❌ Erreur Firebase : ' + e.message, false);
-      data = JSON.parse(JSON.stringify(DEFAULT_DATA));
-      renderAll();
-    }
-  }
-}
-
-function showErrorBanner(msg, dismissible) {
-  let el = document.getElementById('fb-error-banner');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'fb-error-banner';
-    el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:8000;background:#c0392b;color:white;padding:12px 20px;font-size:13px;font-family:Barlow,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:12px';
-    document.body.appendChild(el);
-  }
-  el.innerHTML = `<span>${msg}</span>${dismissible ? '<button onclick="this.parentElement.remove()" style="background:none;border:1px solid rgba(255,255,255,0.4);color:white;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px">OK</button>' : '<button onclick="location.reload()" style="background:none;border:1px solid rgba(255,255,255,0.4);color:white;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:12px">Réessayer</button>'}`;
-  el.style.display = 'flex';
-}
-
-function showLoadingOverlay(show, msg) {
-  let el = document.getElementById('fb-loading');
-  if (!el) {
-    el = document.createElement('div');
-    el.id = 'fb-loading';
-    el.style.cssText = 'position:fixed;inset:0;z-index:9998;background:rgba(6,11,22,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Barlow,sans-serif;color:white;gap:16px';
-    const style = document.createElement('style');
-    style.textContent = '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
-    document.head.appendChild(style);
-    document.body.appendChild(el);
-  }
-  if (show) {
-    el.innerHTML = `<div style="font-size:36px;animation:spin 1s linear infinite">⚙️</div><div style="font-size:14px;letter-spacing:2px;text-transform:uppercase;color:#8898b0">${msg || 'Chargement...'}</div>`;
-    el.style.display = 'flex';
-  } else {
-    el.style.display = 'none';
-  }
-}
 
 // ===== GLOBAL DATA =====
 let data = {};
