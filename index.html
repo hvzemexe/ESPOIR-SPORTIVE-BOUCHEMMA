@@ -846,10 +846,7 @@
 <!-- TOP BAR -->
 <div class="topbar">
   <div class="topbar-links">
-    <a href="#">Accueil</a>
-    <a href="#">Boutique ESB</a>
-    <a href="#">Billetterie</a>
-    <a href="#">Contact</a>
+    <span>🏆 Ligue 1 Tunisie · Saison 2024/25</span>
   </div>
   <div class="topbar-social">
     <a href="#" title="Facebook">f</a>
@@ -872,54 +869,14 @@
 
     <nav class="main-nav" id="main-nav">
       <ul class="nav-list">
-        <li class="nav-item active">
-          <a href="#" class="nav-link">Accueil</a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">Actualités ▾</a>
-          <div class="nav-dropdown">
-            <a href="#">Dernières nouvelles</a>
-            <a href="#">Transferts</a>
-            <a href="#">Communiqués officiels</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">Équipe ▾</a>
-          <div class="nav-dropdown">
-            <a href="#">Effectif</a>
-            <a href="#">Staff technique</a>
-            <a href="#">Équipe réserve</a>
-            <a href="#">Académie</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">Matchs ▾</a>
-          <div class="nav-dropdown">
-            <a href="#">Calendrier</a>
-            <a href="#">Résultats</a>
-            <a href="#">Classement</a>
-            <a href="#">Statistiques</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">Club ▾</a>
-          <div class="nav-dropdown">
-            <a href="#">Histoire du club</a>
-            <a href="#">Stade</a>
-            <a href="#">Partenaires</a>
-            <a href="#">Contact</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">Boutique</a>
-        </li>
+        <li class="nav-item active"><a href="#" class="nav-link">Accueil</a></li>
+        <li class="nav-item"><a href="#actualites" class="nav-link">Actualités</a></li>
+        <li class="nav-item"><a href="#equipe" class="nav-link">Équipe</a></li>
+        <li class="nav-item"><a href="#matchs" class="nav-link">Matchs</a></li>
+        <li class="nav-item"><a href="#boutique" class="nav-link">Boutique</a></li>
       </ul>
     </nav>
 
-    <div class="header-cta">
-      <a href="#" class="btn-outline">Connexion</a>
-      <a href="#" class="btn-primary">Billets</a>
-    </div>
     <div class="hamburger" id="hamburger" onclick="toggleMenu()">
       <span></span><span></span><span></span>
     </div>
@@ -936,10 +893,6 @@
       <div class="hero-tag">Ligue 1 Tunisie · Journée 28</div>
       <h1 class="hero-title">ESB <span>vs</span> Club Africain<br>Ce Dimanche</h1>
       <p class="hero-desc">Le derby s'annonce explosif. L'Espoir Sportif de Bouchema reçoit le Club Africain au Stade Municipal. Soyez là !</p>
-      <div class="hero-actions">
-        <a href="#" class="btn-hero btn-hero-main">🎟 Acheter des billets</a>
-        <a href="#" class="btn-hero btn-hero-sec">Infos match →</a>
-      </div>
     </div>
   </div>
 
@@ -950,10 +903,6 @@
       <div class="hero-tag">Transfert · Officiel</div>
       <h1 class="hero-title">Bienvenue<br><span>à l'ESB 2024/25</span></h1>
       <p class="hero-desc">La direction sportive renforce l'effectif avec de nouvelles recrues ambitieuses pour la nouvelle saison.</p>
-      <div class="hero-actions">
-        <a href="#" class="btn-hero btn-hero-main">Voir l'effectif</a>
-        <a href="#" class="btn-hero btn-hero-sec">En savoir plus →</a>
-      </div>
     </div>
   </div>
 
@@ -965,8 +914,7 @@
       <h1 class="hero-title">Maillot<br><span>Domicile 25/26</span></h1>
       <p class="hero-desc">Le nouveau maillot domicile de l'ESB est disponible. Montrez vos couleurs, portez le bleu et blanc.</p>
       <div class="hero-actions">
-        <a href="#" class="btn-hero btn-hero-main">Commander maintenant</a>
-        <a href="#" class="btn-hero btn-hero-sec">Voir la collection →</a>
+        <a href="#boutique" class="btn-hero btn-hero-main" onclick="setTimeout(()=>openOrder(0),300)">🛒 Commander maintenant</a>
       </div>
     </div>
   </div>
@@ -1047,14 +995,14 @@
 </div>
 
 <!-- NEWS SECTION -->
-<section class="news-section">
+<section class="news-section" id="actualites">
   <div class="container">
     <div class="section-header">
       <div>
         <div class="section-label">Actualités</div>
         <h2 class="section-title">Dernières nouvelles</h2>
       </div>
-      <a href="#" class="see-all">Voir tout</a>
+      
     </div>
 
     <div class="news-grid">
@@ -1138,14 +1086,14 @@
 </section>
 
 <!-- SQUAD SECTION -->
-<section class="squad-section">
+<section class="squad-section" id="equipe">
   <div class="container">
     <div class="section-header">
       <div>
         <div class="section-label">Effectif</div>
         <h2 class="section-title">L'équipe 2024/25</h2>
       </div>
-      <a href="#" class="see-all">Voir tout</a>
+      
     </div>
     <div class="squad-grid">
       <a href="#" class="player-card">
@@ -1213,14 +1161,14 @@
 </section>
 
 <!-- FIXTURES SECTION -->
-<section class="fixtures-section">
+<section class="fixtures-section" id="matchs">
   <div class="container">
     <div class="section-header">
       <div>
         <div class="section-label">Programme</div>
         <h2 class="section-title">Prochains matchs</h2>
       </div>
-      <a href="#" class="see-all">Calendrier complet</a>
+      
     </div>
     <div class="fixtures-list">
       <div class="fixture-row">
@@ -1283,14 +1231,14 @@
 </section>
 
 <!-- SHOP SECTION -->
-<section class="shop-section">
+<section class="shop-section" id="boutique">
   <div class="container">
     <div class="section-header">
       <div>
         <div class="section-label">Boutique officielle</div>
         <h2 class="section-title">Portez les couleurs ESB</h2>
       </div>
-      <a href="#" class="see-all">Voir la boutique</a>
+      
     </div>
     <div class="shop-grid">
       <div class="shop-card" onclick="openOrder(0)">
@@ -1403,43 +1351,25 @@
       </div>
     </div>
     <div class="footer-col">
-      <h4>Club</h4>
+      <h4>Navigation</h4>
       <ul class="footer-links">
-        <li><a href="#">Histoire</a></li>
-        <li><a href="#">Stade Municipal</a></li>
-        <li><a href="#">Direction</a></li>
-        <li><a href="#">Partenaires</a></li>
-        <li><a href="#">Contact</a></li>
+        <li><a href="#actualites">Actualités</a></li>
+        <li><a href="#equipe">Effectif</a></li>
+        <li><a href="#matchs">Matchs & Résultats</a></li>
+        <li><a href="#boutique">Boutique officielle</a></li>
       </ul>
     </div>
     <div class="footer-col">
-      <h4>Football</h4>
+      <h4>Boutique</h4>
       <ul class="footer-links">
-        <li><a href="#">Première équipe</a></li>
-        <li><a href="#">Équipe réserve</a></li>
-        <li><a href="#">Académie ESB</a></li>
-        <li><a href="#">Calendrier</a></li>
-        <li><a href="#">Classement</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Fans</h4>
-      <ul class="footer-links">
-        <li><a href="#">Billetterie</a></li>
-        <li><a href="#">Boutique</a></li>
-        <li><a href="#">Groupes de supporters</a></li>
-        <li><a href="#">Presse & Médias</a></li>
-        <li><a href="#">Newsletter</a></li>
+        <li><a href="#boutique" onclick="setTimeout(()=>openOrder(0),300)">Maillot Domicile 25/26</a></li>
+        <li><a href="#boutique" onclick="setTimeout(()=>openOrder(1),300)">Maillot Extérieur 25/26</a></li>
+        <li><a href="#boutique" onclick="setTimeout(()=>openOrder(2),300)">Casquette ESB 2001</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
     <span>© 2025 Espoir Sportif de Bouchema. Tous droits réservés.</span>
-    <div class="footer-bottom-links">
-      <a href="#">Politique de confidentialité</a>
-      <a href="#">Mentions légales</a>
-      <a href="#">Cookies</a>
-    </div>
   </div>
 </footer>
 
